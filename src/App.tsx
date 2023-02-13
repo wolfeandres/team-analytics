@@ -1,7 +1,7 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-import { LineChart, Line, ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip, Legend, BarChart, Bar } from 'recharts';
+import { LineChart, Line, ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip, Legend, BarChart, Bar, ReferenceLine } from 'recharts';
 import AppBar from '@mui/material/AppBar';
 import Typography from '@mui/material/Typography';
 
@@ -17,8 +17,8 @@ const data = [
 
 const renderLine = (
   <LineChart
-    width={500}
-    height={300}
+    width={875}
+    height={525}
     data={data}
     margin={{
       top: 20,
@@ -27,13 +27,14 @@ const renderLine = (
       bottom: 5,
     }}
   >
-    <CartesianGrid strokeDasharray="3 3" />
-    <XAxis dataKey="month" />
-    <YAxis />
+    <CartesianGrid strokeDasharray="3 3"/>
+    <XAxis dataKey="month" stroke="black"/>
+    <YAxis stroke="black"/>
     <Tooltip />
     <Legend />
-    <Line type="monotone" dataKey="Joy" stroke="#8884d8" activeDot={{r:8}} />
-    <Line type="monotone" dataKey="Alex" stroke="#82ca9d" />
+    <ReferenceLine y={9800} label="Max" stroke="red" />
+    <Line type="monotone" dataKey="Joy" stroke="#2196f3" activeDot={{r:8}} />
+    <Line type="monotone" dataKey="Alex" stroke="#000000" />
   </LineChart>
 );
 
@@ -53,7 +54,7 @@ const renderBar = (
     <XAxis dataKey="month" />
     <Tooltip />
     <Legend />
-    <Bar dataKey="Joy" fill="#8884d8" />
+    <Bar dataKey="Joy" fill="#2196f3" />
     <Bar dataKey="Alex" fill="#82ca9d" />
   </BarChart>
 );
@@ -66,8 +67,12 @@ function App() {
           Online Dashboard
         </Typography>
       </AppBar>
-      <div className="Charts">
+      <div className="main-chart">
         {renderLine}
+      </div>
+      <div className="small-chart">
+        {renderBar}
+        {renderBar}
         {renderBar}
       </div>
     </div>
