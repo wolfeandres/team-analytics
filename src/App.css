@@ -37,9 +37,69 @@
   }
 }
 
-.Charts {
+/* .Charts {
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
+}
+
+.SecondChart {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+} */
+
+
+
+.main-chart {
+  width: 80%;
+  height: 550px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.small-chart {
+  width: 20%;
+  height: 300px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.recharts-default-color0-0 {
+  stroke: #2196f3;
+}
+
+.recharts-default-color1-0 {
+  stroke: #000000;
+}
+
+.recharts-default-color0-1 {
+  fill: #2196f3;
+}
+
+.recharts-default-color1-1 {
+  fill: #4caf50;
+}
+
+.recharts-cartesian-axis-line {
+  stroke: #808080;
+}
+
+.recharts-cartesian-axis-tick-line {
+  stroke: #808080;
+}
+
+.recharts-cartesian-axis-label {
+  fill: #808080;
+}
+
+
+.recharts-legend-text {
+  fill: #808080;
 }
