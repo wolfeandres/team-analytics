@@ -115,8 +115,6 @@ const renderPie = (
   </PieChart>
 );
 
-
-
 const renderBar = (
   <BarChart
     width={500}
@@ -141,10 +139,16 @@ const renderBar = (
 function App() {
   return (
     <div>
-      <AppBar position="static">
-        <Typography variant="h4" component="div" sx={{my:1, mx:1}}>
-          Online Dashboard
-        </Typography>
+      <AppBar position="static" >
+        <Toolbar sx={{ justifyContent: "space-between"}}>
+          <Typography variant="h4" component="div" sx={{my:1, mx:1}}>
+            Online Dashboard
+          </Typography>
+          <div />
+          <Button variant="contained">Individual Data</Button>
+          <Button variant="contained">Confirm</Button>
+          <Button variant="contained">Upload</Button>
+        </Toolbar>
       </AppBar>
       <div className="main-chart">
         {renderLine}
