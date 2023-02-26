@@ -344,53 +344,50 @@
 		}
 	},
 	"events":
-	{
-		"data": 
-		[
-			{
-				"event_type": "0",
-				"current_page": "home_page",
-				"timestamp": 1677240300
-			},
-			{
-				"event_type": "3",
-				"previous_page": "home_page",
-				"current_page": "bluetooth_page",
-				"timestamp": 1677240302
-			},
-			{
-				"event_type": "4",
-				"setting_name": "heart_rate_metric",
-				"previous_value": "bpm",
-				"current_value": "percent",
-				"timestamp": 1677240314
-			},
-			{
-				"event_type": "9",
-				"partner_device_id": "1235",
-				"partner_serial_number": "1234567891",
-				"timestamp": 1677240308
-			},
-			{
-				"event_type": "10",
-				"partner_device_id": "1235",
-				"partner_serial_number": "1234567891",
-				"timestamp": 1677240330
-			},
-			{
-				"event_type": "11",
-				"timestamp": 1677240302
-			},
-			{
-				"event_type": "12",
-				"device_name": "Michael's heart rate monitor",
-				"timestamp": 1677240305
-			},
-			{
-				"event_type": "13",
-				"device_name": "Michael's heart rate monitor",
-				"timestamp": 1677240330
-			}
-		]
-	}
+	[
+		{
+			"event_type": "0",
+			"current_page": "home_page",
+			"timestamp": 1677240300
+		},
+		{
+			"event_type": "3",
+			"previous_page": "home_page",
+			"current_page": "bluetooth_page",
+			"timestamp": 1677240302
+		},
+		{
+			"event_type": "4",
+			"setting_name": "heart_rate_metric",
+			"previous_value": "bpm",
+			"current_value": "percent",
+			"timestamp": 1677240314
+		},
+		{
+			"event_type": "9",
+			"partner_device_id": "1235",
+			"partner_serial_number": "1234567891",
+			"timestamp": 1677240308
+		},
+		{
+			"event_type": "10",
+			"partner_device_id": "1235",
+			"partner_serial_number": "1234567891",
+			"timestamp": 1677240330
+		},
+		{
+			"event_type": "11",
+			"timestamp": 1677240302
+		},
+		{
+			"event_type": "12",
+			"device_name": "Michael's heart rate monitor",
+			"timestamp": 1677240305
+		},
+		{
+			"event_type": "13",
+			"device_name": "Michael's heart rate monitor",
+			"timestamp": 1677240330
+		}
+	]
 }
