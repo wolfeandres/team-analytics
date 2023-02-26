@@ -391,53 +391,50 @@
 		}
 	},
 	"events":
-	{
-		"data": 
-		[
-			{
-				"event_type": "0",
-				"current_page": "home_page",
-				"timestamp": 1677258000
-			},
-			{
-				"event_type": "3",
-				"previous_page": "home_page",
-				"current_page": "bluetooth_page",
-				"timestamp": 1677258004
-			},
-			{
-				"event_type": "4",
-				"setting_name": "heart_rate_metric",
-				"previous_value": "bpm",
-				"current_value": "percent",
-				"timestamp": 1677258030
-			},
-			{
-				"event_type": "9",
-				"partner_device_id": "7891",
-				"partner_serial_number": "7890123457",
-				"timestamp": 167725807
-			},
-			{
-				"event_type": "10",
-				"partner_device_id": "7891",
-				"partner_serial_number": "7890123457",
-				"timestamp": 1677240360
-			},
-			{
-				"event_type": "11",
-				"timestamp": 1677258000
-			},
-			{
-				"event_type": "12",
-				"device_name": "Nancy's heart rate monitor",
-				"timestamp": 1677258007
-			},
-			{
-				"event_type": "13",
-				"device_name": "Nancy's heart rate monitor",
-				"timestamp": 1677258060
-			}
-		]
-	}
+	[
+		{
+			"event_type": "0",
+			"current_page": "home_page",
+			"timestamp": 1677258000
+		},
+		{
+			"event_type": "3",
+			"previous_page": "home_page",
+			"current_page": "bluetooth_page",
+			"timestamp": 1677258004
+		},
+		{
+			"event_type": "4",
+			"setting_name": "heart_rate_metric",
+			"previous_value": "bpm",
+			"current_value": "percent",
+			"timestamp": 1677258030
+		},
+		{
+			"event_type": "9",
+			"partner_device_id": "7891",
+			"partner_serial_number": "7890123457",
+			"timestamp": 167725807
+		},
+		{
+			"event_type": "10",
+			"partner_device_id": "7891",
+			"partner_serial_number": "7890123457",
+			"timestamp": 1677240360
+		},
+		{
+			"event_type": "11",
+			"timestamp": 1677258000
+		},
+		{
+			"event_type": "12",
+			"device_name": "Nancy's heart rate monitor",
+			"timestamp": 1677258007
+		},
+		{
+			"event_type": "13",
+			"device_name": "Nancy's heart rate monitor",
+			"timestamp": 1677258060
+		}
+	]
 }
