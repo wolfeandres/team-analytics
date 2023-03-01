@@ -1,18 +1,15 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
-import { LineChart, Line, ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip, Legend, BarChart, Bar, ReferenceLine, Pie, PieChart, Cell } from 'recharts';
+import { LineChart, Line, ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip, Legend, BarChart, Bar, ReferenceLine, Pie, PieChart, Cell, Label } from 'recharts';
 import AppBar from '@mui/material/AppBar';
 import Typography from '@mui/material/Typography';
+import { Button, IconButton, Toolbar } from '@mui/material';
+import { FileUpload, LegendToggleSharp } from '@mui/icons-material';
+import MyLineChart from './Charts/MyLineChart';
+import FileInput from './FileInput';
 
 const data = [
-  // { month: 'January', Joy: 4000, Alex: 2400,},
-  // { month: 'Febuary', Joy: 3000, Alex: 1398,},
-  // { month: 'March', Joy: 2000, Alex: 9800,},
-  // { month: 'April', Joy: 2780, Alex: 3908,},
-  // { month: 'May', Joy: 1890, Alex: 4800,},
-  // { month: 'June', Joy: 2390, Alex: 3800,},
-  // { month: 'July', Joy: 3490, Alex: 4300,}
   {time: '10:00:00', Joy: 120, Alex: 110},
   {time: '10:10:00', Joy: 135, Alex: 125},
   {time: '10:20:00', Joy: 150, Alex: 140},
@@ -66,6 +63,7 @@ const renderLine = (
     <Line type="monotone" dataKey="Alex" stroke="#000000" />
   </LineChart>
 );
+
 const piedata = [
   { name: 'Group A', value: 400 },
   { name: 'Group B', value: 300 },
@@ -136,22 +134,36 @@ const renderBar = (
   </BarChart>
 );
 
+
+
 function App() {
+  const [JSONData, setJSONData] = useState<any>();
+
+  const getData = (myData: any): void => {
+    setJSONData(myData);
+  }
+
   return (
     <div>
       <AppBar position="static" >
         <Toolbar sx={{ justifyContent: "space-between"}}>
-          <Typography variant="h4" component="div" sx={{my:1, mx:1}}>
+          <Typography variant="h4" component="div" sx={{my:1, marginLeft:1}}>
             Online Dashboard
           </Typography>
           <div />
           <Button variant="contained">Individual Data</Button>
-          <Button variant="contained">Confirm</Button>
-          <Button variant="contained">Upload</Button>
+          <Button variant="contained">Filters</Button>
+          <IconButton aria-label="upload" color="default" component="label">
+            <FileInput getData={getData}/>
+            <FileUpload />
+          </IconButton>
         </Toolbar>
       </AppBar>
+      <div style={{fontSize:'40px', marginLeft:20,  marginTop:20}}>
+        {JSONData != undefined ? "Individual Data" : "Combined Data"}
+      </div>
       <div className="main-chart">
-        {renderLine}
+        {JSONData != undefined ? <MyLineChart data={JSONData['workouts']['1']['heart_rate']['data']} xAxis={'timestamp'} dkOne={'value'} dkTwo={""} /> : renderLine}
       </div>
       <div className="small-chart">
         {renderBar}

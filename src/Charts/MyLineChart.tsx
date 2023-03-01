@@ -1,4 +1,4 @@
-import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, Legend } from 'recharts';
+import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, Legend, ReferenceLine } from 'recharts';
 
 type ChartProps = {
     data: any[];
@@ -11,8 +11,8 @@ const MyLineChart = ( props: ChartProps ) => {
     const { data, xAxis, dkOne, dkTwo } = props;
     return (
         <LineChart
-            width={500}
-            height={300}
+            width={875}
+            height={525}
             data={data}
             margin={{
                 top: 20,
@@ -26,6 +26,7 @@ const MyLineChart = ( props: ChartProps ) => {
             <YAxis />
             <Tooltip />
             <Legend />
+            <ReferenceLine y={110} label="Max" stroke="red" />
             <Line type="monotone" dataKey={dkOne} stroke="#8884d8" activeDot={{r:8}} />
             <Line type="monotone" dataKey={dkTwo} stroke="#82ca9d" />
         </LineChart>
