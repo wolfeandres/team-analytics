@@ -103,3 +103,7 @@
 .recharts-legend-text {
   fill: #808080;
 }
+
+h2.headertest {
+  text-align: center;
+}

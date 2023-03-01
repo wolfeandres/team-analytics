@@ -1,14 +1,15 @@
-import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, Legend } from 'recharts';
+import {Label, LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, Legend } from 'recharts';
 
 type ChartProps = {
     data: any[];
     xAxis: string;
+    yAxis: string;
     dkOne: string;
     dkTwo: string;
 }
 
 const MyLineChart = ( props: ChartProps ) => {
-    const { data, xAxis, dkOne, dkTwo } = props;
+    const { data, xAxis, yAxis, dkOne, dkTwo } = props;
     return (
         <LineChart
             width={500}
@@ -22,8 +23,12 @@ const MyLineChart = ( props: ChartProps ) => {
             }}
         >
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey={xAxis} />
-            <YAxis />
+            <XAxis dataKey={xAxis} stroke="black" >
+                <Label value="Time" offset={-10} position="insideBottomLeft" />
+            </XAxis>
+            <YAxis stroke="black">
+                <Label value= 'Heart Rate' offset={20} position= 'insideBottomLeft' angle={-90}/>
+            </YAxis>
             <Tooltip />
             <Legend />
             <Line type="monotone" dataKey={dkOne} stroke="#8884d8" activeDot={{r:8}} />

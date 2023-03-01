@@ -1,9 +1,10 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-import { LineChart, Line, ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip, Legend, BarChart, Bar, ReferenceLine, Pie, PieChart, Cell } from 'recharts';
+import { Label, LineChart, Line, ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip, Legend, BarChart, Bar, ReferenceLine, Pie, PieChart, Cell } from 'recharts';
 import AppBar from '@mui/material/AppBar';
 import Typography from '@mui/material/Typography';
+import { Button, Toolbar } from '@mui/material';
 
 const data = [
   // { month: 'January', Joy: 4000, Alex: 2400,},
@@ -57,8 +58,12 @@ const renderLine = (
     }}
   >
     <CartesianGrid strokeDasharray="3 3"/>
-    <XAxis dataKey="time" stroke="black"/>
-    <YAxis stroke="black"/>
+    <XAxis dataKey="time" stroke="black" >
+      <Label value="Time" offset={-10} position="insideBottomLeft" />
+    </XAxis>
+    <YAxis stroke="black">
+      <Label value= 'Heart Rate' offset={20} position= 'insideBottomLeft' angle={-90}/>
+    </YAxis>
     <Tooltip />
     <Legend />
     <ReferenceLine y={225} label="Max" stroke="red" />
@@ -128,7 +133,9 @@ const renderBar = (
     }}
   >
     <CartesianGrid strokeDasharray="3 3" />
-    <XAxis dataKey="time" />
+    <XAxis dataKey="time" >
+      <Label value = "Time vs Heart Rate" offset={-15} position="insideBottomLeft"/>
+    </XAxis>
     <Tooltip />
     <Legend />
     <Bar dataKey="Joy" fill="#2196f3" />
@@ -150,6 +157,9 @@ function App() {
           <Button variant="contained">Upload</Button>
         </Toolbar>
       </AppBar>
+      <h2 className="headertest">
+        Heart rate over time
+      </h2>
       <div className="main-chart">
         {renderLine}
       </div>
