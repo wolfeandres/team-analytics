@@ -54,8 +54,12 @@ const renderLine = (
     }}
   >
     <CartesianGrid strokeDasharray="3 3"/>
-    <XAxis dataKey="time" stroke="black"/>
-    <YAxis stroke="black"/>
+    <XAxis dataKey="time" stroke="black" >
+      <Label value="Time" offset={-10} position="insideBottomLeft" />
+    </XAxis>
+    <YAxis stroke="black">
+      <Label value= 'Heart Rate' offset={20} position= 'insideBottomLeft' angle={-90}/>
+    </YAxis>
     <Tooltip />
     <Legend />
     <ReferenceLine y={225} label="Max" stroke="red" />
@@ -126,7 +130,9 @@ const renderBar = (
     }}
   >
     <CartesianGrid strokeDasharray="3 3" />
-    <XAxis dataKey="time" />
+    <XAxis dataKey="time" >
+      <Label value = "Time vs Heart Rate" offset={-15} position="insideBottomLeft"/>
+    </XAxis>
     <Tooltip />
     <Legend />
     <Bar dataKey="Joy" fill="#2196f3" />
