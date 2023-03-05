@@ -2,14 +2,13 @@ import { Label, LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, Legend, R
 
 type ChartProps = {
     data: any[];
-    xAxis: string;
-    yAxis: string;
-    dkOne: string;
-    dkTwo: string;
+    json1: any;
+    json2: any;
 }
 
 const MyLineChart = ( props: ChartProps ) => {
-    const { data, xAxis, yAxis, dkOne, dkTwo } = props;
+    const { data, json1, json2 } = props;
+
     return (
         <LineChart
             width={875}
@@ -23,17 +22,18 @@ const MyLineChart = ( props: ChartProps ) => {
             }}
         >
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey={xAxis} stroke="black" >
+            <XAxis dataKey='timestamp' stroke="black">
                 <Label value="Time" offset={-10} position="insideBottomLeft" />
             </XAxis>
-            <YAxis stroke="black">
+            <YAxis domain={['dataMin - 5', 'dataMax + 5']}>
                 <Label value= 'Heart Rate' offset={20} position= 'insideBottomLeft' angle={-90}/>
             </YAxis>
             <Tooltip />
             <Legend />
-            <ReferenceLine y={110} label="Max" stroke="red" />
-            <Line type="monotone" dataKey={dkOne} stroke="#8884d8" activeDot={{r:8}} />
-            <Line type="monotone" dataKey={dkTwo} stroke="#82ca9d" />
+            <ReferenceLine y={json1['workout']['heart_rate']['max_heart_rate']} label="Max" stroke="red" ifOverflow='extendDomain' />
+            <ReferenceLine y={json2['workout']['heart_rate']['max_heart_rate']} label="Max" stroke="blue" ifOverflow='extendDomain' />
+            <Line name={json1['name']}type="monotone" dataKey='value1' stroke="#8884d8" activeDot={{r:8}} />
+            <Line name={json2['name']} type="monotone" dataKey='value2' stroke="#82ca9d" />
         </LineChart>
     );
 }

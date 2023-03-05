@@ -12,21 +12,25 @@ const readJsonFile = (file: Blob) =>
         fileReader.readAsText(file)
     })
 
-type myFunction = {
-   getData: (arg: any) => void;  
-} 
+interface Props {
+    passFiles: (arg: any) => void
+}
 
-const FileInput = (getData: myFunction) => {
+const FileInput: React.FC<Props> = ({passFiles}) => {
     const onChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files) {
-            const parsedData = await readJsonFile(event.target.files[0])
-            getData.getData(parsedData)
-            console.log(parsedData)
+            let files = []
+            for (let i = 0; i < event.target.files.length; i++) {
+                const parsedData = await readJsonFile(event.target.files[i])
+                console.log(parsedData)
+                files.push(parsedData)
+            }
+            passFiles(files)
         }
     }
 
     return (
-        <input hidden type="file" accept=".json,application/json" onChange={onChange} />
+        <input hidden type="file" multiple accept=".json,application/json" onChange={onChange} />
     )
 }
 
