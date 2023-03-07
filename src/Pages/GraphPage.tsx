@@ -75,6 +75,12 @@ interface Props {
 const GraphPage: React.FC<Props> = ({jsons}) => {
     const heart_rate = mergeData(jsons[0]['workout']['heart_rate']['data'], jsons[1]['workout']['heart_rate']['data'])
 
+    const timestamp0: number = jsons[0]['workout']['start_timestamp']
+    const date0: Date = new Date(timestamp0 * 1000)
+
+    const timestamp1: number = jsons[1]['workout']['start_timestamp']
+    const date1: Date = new Date(timestamp0 * 1000)
+
     return (
         <div>
             <AppBar position="static" >
@@ -89,6 +95,24 @@ const GraphPage: React.FC<Props> = ({jsons}) => {
             </AppBar>
             <div style={{fontSize:'40px', marginLeft:20,  marginTop:20}}>
                 Combined Data
+            </div>
+            <div style={{fontSize: '20px', marginLeft:20, marginTop:10}}>
+                {jsons[0]['name']}
+            </div>
+            <div style={{fontSize: '15px', marginLeft:20, marginTop:0}}>
+                Device ID - {jsons[0]['device_id']}
+            </div>
+            <div style={{fontSize: '15px', marginLeft:20, marginTop:0}}>
+                Start Time - {date0.toLocaleTimeString()} - {date0.toLocaleDateString()}
+            </div>
+            <div style={{fontSize: '20px', marginLeft:20, marginTop:20}}>
+                {jsons[1]['name']}
+            </div>
+            <div style={{fontSize: '15px', marginLeft:20, marginTop:0}}>
+                Device ID - {jsons[1]['device_id']}
+            </div>
+            <div style={{fontSize: '15px', marginLeft:20, marginTop:0}}>
+                Start Time - {date1.toLocaleTimeString()} - {date1.toLocaleDateString()}
             </div>
             <div className="main-chart">
                 <MyLineChart data={heart_rate} json1={jsons[0]} json2={jsons[1]} /> 
