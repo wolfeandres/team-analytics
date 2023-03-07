@@ -32,7 +32,6 @@ type ChartProps = {
 
 
 const MyPieChart = ( props: ChartProps ) => {
-  console.log("hello world");
   const { data, dkOne } = props;
   interface Event {
     event_type: string;

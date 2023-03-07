@@ -17,7 +17,7 @@ const MyLineChart = ( props: ChartProps ) => {
     if (size === 'small') {
         width = 500
         height = 300
-    } else if (size == 'tiny') {
+    } else if (size === 'tiny') {
         width = 400
         height = 250
     }
@@ -43,7 +43,7 @@ const MyLineChart = ( props: ChartProps ) => {
         </YAxis>
         <Tooltip />
         <Legend />
-        <ReferenceLine y={json1['workout']['heart_rate']['max_heart_rate']} label="Max" stroke="#8884d8" ifOverflow='extendDomain' />
+        <ReferenceLine y={type === 'heart_rate' ? json1['workout']['heart_rate']['max_heart_rate'] : null} label="Max" stroke="#8884d8" ifOverflow='extendDomain' />
         <Line name={json1['name']} type="monotone" dataKey='value' stroke="#8884d8" activeDot={{r:8}} />
     </LineChart>
     )

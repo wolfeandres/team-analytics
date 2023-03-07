@@ -1,8 +1,9 @@
-import { AppBar, Box, Button, IconButton, Toolbar, Typography } from "@mui/material"
+import { AppBar, Box, Button, Toolbar, Typography } from "@mui/material"
 import { ArrowBack, FileUpload, Storage } from '@mui/icons-material';
 import FileInput from "../FileInput";
 import { useState } from "react";
 import DatabasePage from './DatabasePage'
+import DatabaseHandler from "../Handlers/DatabaseHandler";
 
 const styles = {
     bg_container: {
@@ -39,8 +40,19 @@ interface Props {
     passFiles: (arg: any) => void
 }
 
+var data: any[]
+
 const UploadPage: React.FC<Props> = ({passFiles}) => {
     const [dbPage, setdbPage] = useState<Boolean>(false)
+
+    DatabaseHandler.getDatabaseEntries()
+    .then((result: any[]) => {
+        data = result
+        console.log(data.slice(1))
+    })
+    .catch((e: any) => {
+        console.log(e);
+    })
 
     var renderUpload = (
         <div style={styles.buttons}>
@@ -60,7 +72,7 @@ const UploadPage: React.FC<Props> = ({passFiles}) => {
         renderUpload = (
             <div style={styles.buttons}>
                 <Button style={styles.backArrow} onClick={() => {setdbPage(false)}}variant='contained' startIcon={<ArrowBack/>}>Back</Button>
-                <DatabasePage passFiles={passFiles} />
+                <DatabasePage passFiles={passFiles} data={data.slice(1)}/>
             </div>
         )
     }

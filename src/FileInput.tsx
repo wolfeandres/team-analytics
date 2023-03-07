@@ -1,3 +1,5 @@
+import DatabaseHandler from "./Handlers/DatabaseHandler"
+
 const readJsonFile = (file: Blob) =>
     new Promise((resolve, reject) => {
         const fileReader = new FileReader()
@@ -24,6 +26,7 @@ const FileInput: React.FC<Props> = ({passFiles}) => {
                 const parsedData = await readJsonFile(event.target.files[i])
                 console.log(parsedData)
                 files.push(parsedData)
+                DatabaseHandler.insertJSON(parsedData)
             }
             passFiles(files)
         }

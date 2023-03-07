@@ -59,6 +59,33 @@ const GraphPage: React.FC<Props> = ({jsons}) => {
     const timestamp1: number = jsons[1]['workout']['start_timestamp']
     const date1: Date = new Date(timestamp0 * 1000)
 
+    const header = (
+        <div style={{ display: 'flex', justifyContent: 'space-between'}}>
+            <div>
+                <div style={{fontSize: '20px', marginLeft:20, marginTop:10}}>
+                    {jsons[0]['name']}
+                </div>
+                <div style={{fontSize: '15px', marginLeft:20, marginTop:0}}>
+                    Device ID - {jsons[0]['device_id']}
+                </div>
+                <div style={{fontSize: '15px', marginLeft:20, marginTop:0}}>
+                    Start Time - {date0.toLocaleTimeString()} - {date0.toLocaleDateString()}
+                </div>
+            </div>
+            <div>
+                <div style={{fontSize: '20px', marginRight:450, marginTop:20}}>
+                    {jsons[1]['name']}
+                </div>
+                <div style={{fontSize: '15px', marginRight:450, marginTop:0}}>
+                    Device ID - {jsons[1]['device_id']}
+                </div>
+                <div style={{fontSize: '15px', marginRight:450, marginTop:0}}>
+                    Start Time - {date1.toLocaleTimeString()} - {date1.toLocaleDateString()}
+                </div>
+            </div>
+        </div>
+    )
+
     var renderGraphs = (
         <div>
             <div className="main-chart">
@@ -82,17 +109,17 @@ const GraphPage: React.FC<Props> = ({jsons}) => {
                         </div>
                         <div className="small-chart">
                             <MyPieChart data={events0} dkOne='value' />
-                            <MyLineChart data={convertData(jsons[0]['workout']['distance']['data'])} json1={jsons[0]} size='tiny'/> 
+                            <MyLineChart data={convertData(jsons[0]['workout']['distance']['data'])} json1={jsons[0]} size='tiny' type='distance'/> 
                         </div>
                     </div>
-                    <div className='vertical-bar'/>
+                    <div className='vertical-bar'></div>
                     <div className='half-container'>
                         <div className='medium-chart'>
                             <MyLineChart data={convertData(jsons[1]['workout']['heart_rate']['data'])} json1={jsons[1]} size='small'/> 
                         </div>
                         <div className="small-chart">
                             <MyPieChart data={events1} dkOne='value' />
-                            <MyLineChart data={convertData(jsons[1]['workout']['distance']['data'])} json1={jsons[1]} size='tiny'/> 
+                            <MyLineChart data={convertData(jsons[1]['workout']['distance']['data'])} json1={jsons[1]} size='tiny' type='distance'/> 
                         </div>
                     </div>
                 </div>
@@ -104,7 +131,7 @@ const GraphPage: React.FC<Props> = ({jsons}) => {
         <div>
             <AppBar position="static" >
                 <Toolbar sx={{ justifyContent: "space-between"}}>
-                <Typography variant="h4" component="div" sx={{my:1, marginLeft:1, marginRight:-85}}>
+                <Typography variant="h4" component="div" sx={{my:1, marginLeft:1, marginRight:-90}}>
                     Online Dashboard
                 </Typography>
                 <div />
@@ -113,26 +140,9 @@ const GraphPage: React.FC<Props> = ({jsons}) => {
                 </Toolbar>
             </AppBar>
             <div style={{fontSize:'40px', marginLeft:20,  marginTop:20}}>
-                {individual ? "Separate Data" : "Combined Data"}
+                {individual ? "Individual Data" : "Combined Data"}
             </div>
-            <div style={{fontSize: '20px', marginLeft:20, marginTop:10}}>
-                {jsons[0]['name']}
-            </div>
-            <div style={{fontSize: '15px', marginLeft:20, marginTop:0}}>
-                Device ID - {jsons[0]['device_id']}
-            </div>
-            <div style={{fontSize: '15px', marginLeft:20, marginTop:0}}>
-                Start Time - {date0.toLocaleTimeString()} - {date0.toLocaleDateString()}
-            </div>
-            <div style={{fontSize: '20px', marginLeft:20, marginTop:20}}>
-                {jsons[1]['name']}
-            </div>
-            <div style={{fontSize: '15px', marginLeft:20, marginTop:0}}>
-                Device ID - {jsons[1]['device_id']}
-            </div>
-            <div style={{fontSize: '15px', marginLeft:20, marginTop:0}}>
-                Start Time - {date1.toLocaleTimeString()} - {date1.toLocaleDateString()}
-            </div>
+            {header}
             {renderGraphs}
     </div>
     )
