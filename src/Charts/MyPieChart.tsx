@@ -109,14 +109,14 @@ const MyPieChart = ( props: ChartProps ) => {
   const piedata = filterEventsWithType3(data);
   const f = makeData(piedata);
   return(
-    <PieChart width={400} height={400}>
+    <PieChart width={250} height={250}>
       <Pie
       data={f}
       cx="50%"
       cy="50%"
       labelLine={false}
       label={renderCustomizedLabel}
-      outerRadius={150}
+      outerRadius={100}
       fill="#8884d8"
       dataKey={dkOne}
     >
