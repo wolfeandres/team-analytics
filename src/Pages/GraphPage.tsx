@@ -6,45 +6,6 @@ import MyPieChart from "../Charts/MyPieChart"
 import FileInput from "../FileInput"
 import { useState } from "react"
 
-const data = [
-    {time: '10:00:00', Joy: 120, Alex: 110},
-    {time: '10:10:00', Joy: 135, Alex: 125},
-    {time: '10:20:00', Joy: 150, Alex: 140},
-    {time: '10:30:00', Joy: 165, Alex: 155},
-    {time: '10:40:00', Joy: 175, Alex: 170},
-    {time: '10:50:00', Joy: 155, Alex: 145},
-    {time: '11:00:00', Joy: 130, Alex: 120},
-    {time: '11:00:00', Joy: 120, Alex: 110},
-    {time: '11:01:00', Joy: 125, Alex: 120},
-    {time: '11:02:00', Joy: 130, Alex: 115},
-    {time: '11:03:00', Joy: 135, Alex: 110},
-    {time: '11:04:00', Joy: 140, Alex: 120},
-    {time: '11:05:00', Joy: 145, Alex: 130},
-    {time: '11:06:00', Joy: 150, Alex: 125},
-    {time: '11:07:00', Joy: 155, Alex: 130},
-    {time: '11:08:00', Joy: 160, Alex: 125},
-    {time: '11:09:00', Joy: 165, Alex: 120},
-    {time: '10:10:00', Joy: 170, Alex: 130},
-    {time: '10:11:00', Joy: 175, Alex: 135},
-    {time: '10:12:00', Joy: 180, Alex: 125},
-    {time: '10:13:00', Joy: 185, Alex: 120},
-    {time: '10:14:00', Joy: 190, Alex: 125},
-    {time: '10:15:00', Joy: 195, Alex: 135},
-    {time: '10:16:00', Joy: 200, Alex: 140},
-    {time: '10:17:00', Joy: 205, Alex: 145},
-    {time: '10:18:00', Joy: 210, Alex: 150},
-    {time: '10:19:00', Joy: 215, Alex: 155},
-    {time: '10:20:00', Joy: 220, Alex: 160},
-    {time: '10:21:00', Joy: 225, Alex: 175}
-  ];
-
-const piedata = [
-    { name: 'Group A', value: 400 },
-    { name: 'Group B', value: 300 },
-    { name: 'Group C', value: 300 },
-    { name: 'Group D', value: 200 },
-];
-
 const mergeData = (json1: any[], json2: any[]) => {
     let merged: {[key: number]: {value1?: number, value2?:number}} = {};
 
@@ -77,6 +38,7 @@ const convertData = (data: any[]) => {
         }
     })
 }
+
 interface Props {
     jsons: any[]
 }
@@ -85,6 +47,10 @@ const GraphPage: React.FC<Props> = ({jsons}) => {
     const [individual, setIndividual] = useState<Boolean>(false)
 
     const heart_rate = mergeData(jsons[0]['workout']['heart_rate']['data'], jsons[1]['workout']['heart_rate']['data'])
+
+    const events0 = (jsons[0]['events'])
+    const events1 = (jsons[1]['events'])
+
     const distance = mergeData(jsons[0]['workout']['distance']['data'], jsons[1]['workout']['distance']['data'])
 
     const timestamp0: number = jsons[0]['workout']['start_timestamp']
@@ -99,9 +65,9 @@ const GraphPage: React.FC<Props> = ({jsons}) => {
                 <MyLineChart data={heart_rate} json1={jsons[0]} json2={jsons[1]} type='heart_rate' /> 
             </div>
             <div className="small-chart">
-                <MyPieChart data={piedata} dkOne='value' />
+                <MyPieChart data={events0} dkOne='value' />
                 <MyLineChart data={distance} json1={jsons[0]} json2={jsons[1]} size='small' type='distance' />
-                <MyPieChart data={piedata} dkOne='value' />
+                <MyPieChart data={events1} dkOne='value' />
             </div>
         </div>
     )
@@ -115,7 +81,7 @@ const GraphPage: React.FC<Props> = ({jsons}) => {
                             <MyLineChart data={convertData(jsons[0]['workout']['heart_rate']['data'])} json1={jsons[0]} size='small'/> 
                         </div>
                         <div className="small-chart">
-                            <MyPieChart data={piedata} dkOne='value' />
+                            <MyPieChart data={events0} dkOne='value' />
                             <MyLineChart data={convertData(jsons[0]['workout']['distance']['data'])} json1={jsons[0]} size='tiny'/> 
                         </div>
                     </div>
@@ -125,7 +91,7 @@ const GraphPage: React.FC<Props> = ({jsons}) => {
                             <MyLineChart data={convertData(jsons[1]['workout']['heart_rate']['data'])} json1={jsons[1]} size='small'/> 
                         </div>
                         <div className="small-chart">
-                            <MyPieChart data={piedata} dkOne='value' />
+                            <MyPieChart data={events1} dkOne='value' />
                             <MyLineChart data={convertData(jsons[1]['workout']['distance']['data'])} json1={jsons[1]} size='tiny'/> 
                         </div>
                     </div>

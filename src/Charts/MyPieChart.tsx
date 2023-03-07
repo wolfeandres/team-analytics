@@ -1,6 +1,6 @@
-import { Tooltip,  Pie, PieChart, Cell } from 'recharts';
+import { Tooltip, Pie, PieChart, Cell } from 'recharts';
 
-const COLORS: string[] = ['#2196f3', '#000000', '#4caf50', '#808080'];
+const COLORS: string[] = ['#2196f3', '#000000', '#4caf50', '#808080', '#FF0000', '#A020F0', '#FFFF00'];
 const RADIAN = Math.PI / 180;
 
 const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }: {
@@ -28,12 +28,90 @@ type ChartProps = {
     dkOne: string;
 }
 
+
+
+
 const MyPieChart = ( props: ChartProps ) => {
+  console.log("hello world");
   const { data, dkOne } = props;
+  interface Event {
+    event_type: string;
+    current_page?: string;
+    timestamp: number;
+    setting_name?: string;
+    previous_value?: string;
+    current_value?: string;
+    partner_device_id?: string;
+    partner_serial_number?: string;
+    device_name?: string;
+    // add more properties here if needed
+  }
+  
+  interface EventSubset {
+    event_type: string;
+    current_page?: string;
+    timestamp: number;
+  }
+
+  interface finalData {
+    name?: string;
+    value: number;
+  }
+  
+  function filterEventsWithType3(events: Event[]): EventSubset[] {
+    const result: EventSubset[] = [];
+    
+    // sort events by timestamp in ascending order
+    events.sort((a, b) => a.timestamp - b.timestamp);
+
+    // add the first event to the result array
+    const firstEvent = events[0];
+    const { timestamp: firstTimestamp, event_type: firstEventType, current_page: firstCurrentPage } = firstEvent;
+    result.push({ timestamp: firstTimestamp, event_type: firstEventType, current_page: firstCurrentPage});
+    
+    // filter events with event_type equal to 3
+    for (const event of events) {
+      if (event.event_type === '3') {
+        const { timestamp, event_type, current_page } = event;
+        result.push({ timestamp, event_type, current_page });
+      }
+    }
+  
+    // add the last event to the result array
+    const lastEvent = events[events.length - 1];
+    const { timestamp: lastTimestamp, event_type: lastEventType, current_page: lastCurrentPage } = lastEvent;
+    result.push({ timestamp: lastTimestamp, event_type: lastEventType, current_page: lastCurrentPage });
+
+    const finaldata = [];
+    for(let i = 1; i < result.length; i++)
+    {
+      const dif = result[i].timestamp - result[i -1].timestamp
+      const d = {name: result[i-1].current_page, value: dif}
+      finaldata.push(d);
+    }
+    return result;
+  }
+
+  function makeData(result: EventSubset[]): finalData[]{
+    const finalData: finalData[] = [];
+
+    for(let i = 1; i < result.length; i++)
+    {
+      const dif = result[i].timestamp - result[i -1].timestamp
+      const d = {name: result[i-1].current_page, value: dif}
+      finalData.push(d);
+    }
+    return finalData;
+  }
+
+  
+  
+  const piedata = filterEventsWithType3(data);
+  const f = makeData(piedata);
   return(
     <PieChart width={250} height={250}>
       <Pie
-      data={data}
+      data={f}
       cx="50%"
       cy="50%"
       labelLine={false}
