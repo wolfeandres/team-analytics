@@ -1,4 +1,4 @@
-import { Label, LineChart, Line, ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip, Legend, BarChart, Bar, ReferenceLine, Pie, PieChart, Cell } from 'recharts';
+import { Tooltip,  Pie, PieChart, Cell } from 'recharts';
 
 const COLORS: string[] = ['#2196f3', '#000000', '#4caf50', '#808080'];
 const RADIAN = Math.PI / 180;
@@ -31,14 +31,14 @@ type ChartProps = {
 const MyPieChart = ( props: ChartProps ) => {
   const { data, dkOne } = props;
   return(
-    <PieChart width={400} height={400}>
+    <PieChart width={250} height={250}>
       <Pie
       data={data}
       cx="50%"
       cy="50%"
       labelLine={false}
       label={renderCustomizedLabel}
-      outerRadius={150}
+      outerRadius={100}
       fill="#8884d8"
       dataKey={dkOne}
     >

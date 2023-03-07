@@ -1,7 +1,8 @@
-import { AppBar, Box, Button, Toolbar, Typography } from "@mui/material"
-import { FileUpload, Storage } from '@mui/icons-material';
+import { AppBar, Box, Button, IconButton, Toolbar, Typography } from "@mui/material"
+import { ArrowBack, FileUpload, Storage } from '@mui/icons-material';
 import FileInput from "../FileInput";
 import { useState } from "react";
+import DatabasePage from './DatabasePage'
 
 const styles = {
     bg_container: {
@@ -22,6 +23,15 @@ const styles = {
 
     button: {
         width: '150px'
+    },
+
+    container: {
+        position: 'relative' as const
+    },
+
+    backArrow: {
+        position: 'absolute' as const,
+        top: -45,
     }
 };
 
@@ -30,6 +40,31 @@ interface Props {
 }
 
 const UploadPage: React.FC<Props> = ({passFiles}) => {
+    const [dbPage, setdbPage] = useState<Boolean>(false)
+
+    var renderUpload = (
+        <div style={styles.buttons}>
+            <Box mb={1}>
+                <Button variant='contained' style={styles.button} endIcon={<FileUpload/>} component='label'>
+                    Browse
+                    <FileInput passFiles={passFiles}/>
+                </Button>
+            </Box>
+            <Box mt={1}>
+                <Button variant='contained' style={styles.button} endIcon={<Storage/>} onClick={() => {setdbPage(true)}}>Database</Button>
+            </Box>
+        </div>
+    )
+
+    if (dbPage) {
+        renderUpload = (
+            <div style={styles.buttons}>
+                <Button style={styles.backArrow} onClick={() => {setdbPage(false)}}variant='contained' startIcon={<ArrowBack/>}>Back</Button>
+                <DatabasePage passFiles={passFiles} />
+            </div>
+        )
+    }
+
     return (
         <div>
             <AppBar position="static">
@@ -40,17 +75,7 @@ const UploadPage: React.FC<Props> = ({passFiles}) => {
                 </Toolbar>
             </AppBar>
             <div style={styles.bg_container}>
-                <div style={styles.buttons}>
-                    <Box mb={1}>
-                        <Button variant='contained' style={styles.button} endIcon={<FileUpload/>} component='label'>
-                            Browse
-                            <FileInput passFiles={passFiles}/>
-                        </Button>
-                    </Box>
-                    <Box mt={1}>
-                        <Button variant='contained' style={styles.button} endIcon={<Storage/>}>Database</Button>
-                    </Box>
-                </div>
+                {renderUpload}
             </div>
         </div>
     )

@@ -71,6 +71,36 @@
   align-items: center;
 }
 
+.container {
+  display: flex;
+  flex-direction: row;
+  height: 100%;  
+}
+
+.half-container {
+  height: 100%;
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px
+}
+
+.medium-chart {
+  width: 100%;
+  height: 450px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vertical-bar {
+  border-right: 10px solid #000000;
+  height: 100%
+}
+
 .recharts-default-color0-0 {
   stroke: #2196f3;
 }
