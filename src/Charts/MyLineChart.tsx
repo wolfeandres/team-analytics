@@ -30,10 +30,10 @@ const MyLineChart = ( props: ChartProps ) => {
             </YAxis>
             <Tooltip />
             <Legend />
-            <ReferenceLine y={json1['workout']['heart_rate']['max_heart_rate']} label="Max" stroke="red" ifOverflow='extendDomain' />
-            <ReferenceLine y={json2['workout']['heart_rate']['max_heart_rate']} label="Max" stroke="blue" ifOverflow='extendDomain' />
-            <Line name={json1['name']}type="monotone" dataKey='value1' stroke="#8884d8" activeDot={{r:8}} />
-            <Line name={json2['name']} type="monotone" dataKey='value2' stroke="#82ca9d" />
+            <ReferenceLine y={json1['workout']['heart_rate']['max_heart_rate']} label="Max" stroke="#2196f3" ifOverflow='extendDomain' />
+            <ReferenceLine y={json2['workout']['heart_rate']['max_heart_rate']} label="Max" stroke="#000000" ifOverflow='extendDomain' />
+            <Line name={json1['name']}type="monotone" dataKey='value1' stroke="#2196f3" activeDot={{r:8}} />
+            <Line name={json2['name']} type="monotone" dataKey='value2' stroke="#000000" />
         </LineChart>
     );
 }

@@ -68,13 +68,15 @@ const mergeData = (json1: any[], json2: any[]) => {
     return result
 }
 
+
 interface Props {
     jsons: any[]
 }
 
 const GraphPage: React.FC<Props> = ({jsons}) => {
     const heart_rate = mergeData(jsons[0]['workout']['heart_rate']['data'], jsons[1]['workout']['heart_rate']['data'])
-
+    const events = (jsons[0]['events'])
+    const events1 = (jsons[1]['events'])
     return (
         <div>
             <AppBar position="static" >
@@ -94,9 +96,9 @@ const GraphPage: React.FC<Props> = ({jsons}) => {
                 <MyLineChart data={heart_rate} json1={jsons[0]} json2={jsons[1]} /> 
             </div>
             <div className="small-chart">
+                <MyPieChart data={events1} dkOne='value' />
                 <MyBarChart data={data} xAxis='time' yAxis='' dkOne='Joy' dkTwo='Alex' />
-                <MyPieChart data={piedata} dkOne='value' />
-                <MyBarChart data={data} xAxis='time' yAxis='' dkOne='Joy' dkTwo='Alex' />
+                <MyPieChart data={events} dkOne='value' />
             </div>
     </div>
     )
