@@ -9,8 +9,20 @@ const renderRow = (props: ListChildComponentProps & { passFiles: (arg: any) => v
     const handleClick = async () => {
         let files = []
         files.push(data[index])
-        const partner = await DatabaseHandler.getPartnerJSON(data[index])
-        console.log(partner)
+
+        var partner: any
+        console.log(data[index])
+
+        try {
+            if (data[index].workout.partners.length == 0 || data[index].workout.partners[0].name === '' || data[index].workout.partners[0].name === null) {
+                partner = data[index]
+            } else {
+                partner = await DatabaseHandler.getPartnerJSON(data[index])
+            }
+        } catch (e) {
+            partner = data[index]
+        }
+
         files.push(partner)
         passFiles(files)
     }
@@ -18,22 +30,31 @@ const renderRow = (props: ListChildComponentProps & { passFiles: (arg: any) => v
     var name: string | undefined | null;
 
     try {
-        name = data[index].name
+        if (data[index].name == '' || data[index].name == null) {
+            name = "No name " + index 
+        } else {
+            name = data[index].name
+        }
     } catch (e) {
-        name = "Null"
+        name = "#"
     }
 
     var partnerName: string | undefined | null;
+
     try {
-        partnerName = data[index].workout.partner.name
+        if (data[index].workout.partners.length == 0 || data[index].workout.partners[0].name == '' || data[index].workout.partners[0].name == null) {
+            partnerName = ' | No name'
+        } else {
+            partnerName = " | " + data[index].workout.partners[0].name
+        }
     } catch (e) {
-        partnerName = 'Null Partner'
+        partnerName = ' | #'
     }
     
     return (
         <ListItem style={style} key={data[index]._id} component="div" disablePadding>
             <ListItemButton onClick={handleClick}>
-                <ListItemText primary={name + " | " + partnerName} secondary={(new Date(data[index].workout.start_timestamp * 1000)).toLocaleDateString()}/>
+                <ListItemText primary={name + partnerName} secondary={(new Date(data[index].workout.start_timestamp * 1000)).toLocaleDateString()}/>
             </ListItemButton>
         </ListItem>
     )

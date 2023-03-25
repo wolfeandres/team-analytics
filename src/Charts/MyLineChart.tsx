@@ -44,7 +44,7 @@ const MyLineChart = ( props: ChartProps ) => {
         <Tooltip />
         <Legend />
         <ReferenceLine y={type === 'heart_rate' ? json1['workout']['heart_rate']['max_heart_rate'] : null} label="Max" stroke="#8884d8" ifOverflow='extendDomain' />
-        <Line name={json1['name']} type="monotone" dataKey='value' stroke="#8884d8" activeDot={{r:8}} />
+        <Line name={json1['name'] == null ? "" : json1['name']} type="monotone" dataKey='value' stroke="#8884d8" activeDot={{r:8}} />
     </LineChart>
     )
     
