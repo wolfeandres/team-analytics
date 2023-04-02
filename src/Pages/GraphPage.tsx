@@ -1,23 +1,23 @@
-import { FileUpload } from "@mui/icons-material"
-import { AppBar, Toolbar, Typography, Button, IconButton } from "@mui/material"
+import { AppBar, Toolbar, Typography, Button, IconButton, Dialog, DialogTitle, DialogContent, DialogContentText, FormControlLabel, DialogActions, Checkbox } from "@mui/material"
 import MyBarChart from "../Charts/MyBarChart"
 import MyLineChart from "../Charts/MyLineChart"
 import MyPieChart from "../Charts/MyPieChart"
 import FileInput from "../FileInput"
 import { useState } from "react"
+import { ArrowBack } from "@mui/icons-material"
 
 const mergeData = (json1: any[], json2: any[]) => {
     let merged: {[key: number]: {value1?: number, value2?:number}} = {};
 
     json1.forEach(item => {
-        merged[item.timestamp] = { value1: item.value }
+        merged[item.timestamp] = { value1: Math.trunc(item.value * 100) / 100 }
     })
 
     json2.forEach(item => {
         if (merged[item.timestamp]) {
-            merged[item.timestamp].value2 = item.value
+            merged[item.timestamp].value2 = Math.trunc(item.value * 100) / 100
         } else {
-            merged[item.timestamp] = { value2: item.value}
+            merged[item.timestamp] = { value2: Math.trunc(item.value * 100) / 100}
         }
     })
 
@@ -31,27 +31,38 @@ const mergeData = (json1: any[], json2: any[]) => {
 }
 
 const convertData = (data: any[]) => {
-    return data.map((obj) => {
+    return data.map((item) => {
         return {
-            ...obj,
-            timestamp: (new Date(obj.timestamp * 1000)).toLocaleTimeString()
+            value: Math.trunc(item.value * 100) / 100,
+            timestamp: (new Date(item.timestamp * 1000)).toLocaleTimeString()
         }
     })
 }
 
 interface Props {
     jsons: any[]
+    updateFiles: (arg: any) => void
 }
 
-const GraphPage: React.FC<Props> = ({jsons}) => {
-    const [individual, setIndividual] = useState<Boolean>(false)
+const GraphPage: React.FC<Props> = ({jsons, updateFiles}) => {
+    const [individual, setIndividual] = useState<boolean>(false)
+    const [filtersDialog, setFiltersDialog] = useState<boolean>(false)
+    const [chosenData, setChosenData] = useState<string>('heart_rate')
 
-    const heart_rate = mergeData(jsons[0]['workout']['heart_rate']['data'], jsons[1]['workout']['heart_rate']['data'])
+    var data: any
+    const dataOptions = ['heart_rate', 'distance', 'steps', 'calories', 'speed']
+
+    for (let i  = 1; i < dataOptions.length; i++) {
+        try {
+            data = mergeData(jsons[0]['workout'][chosenData]['data'], jsons[1]['workout'][chosenData]['data'])
+            break
+        } catch(e) {
+            setChosenData(dataOptions[i])
+        }
+    }
 
     const events0 = (jsons[0]['events'])
     const events1 = (jsons[1]['events'])
-
-    const distance = mergeData(jsons[0]['workout']['distance']['data'], jsons[1]['workout']['distance']['data'])
 
     const timestamp0: number = jsons[0]['workout']['start_timestamp']
     const date0: Date = new Date(timestamp0 * 1000)
@@ -60,8 +71,8 @@ const GraphPage: React.FC<Props> = ({jsons}) => {
     const date1: Date = new Date(timestamp0 * 1000)
 
     const header = (
-        <div style={{ display: 'flex', justifyContent: 'space-between'}}>
-            <div>
+        <div style={{ display: 'flex'}}>
+            <div style={{ width:'50%', float:'left'}}>
                 <div style={{fontSize: '20px', marginLeft:20, marginTop:10}}>
                     {jsons[0]['name']}
                 </div>
@@ -72,14 +83,14 @@ const GraphPage: React.FC<Props> = ({jsons}) => {
                     Start Time - {date0.toLocaleTimeString()} - {date0.toLocaleDateString()}
                 </div>
             </div>
-            <div>
-                <div style={{fontSize: '20px', marginRight:450, marginTop:20}}>
+            <div style={{ width:'50%', float:'right'}}>
+                <div style={{fontSize: '20px', marginLeft:20, marginTop:10}}>
                     {jsons[1]['name']}
                 </div>
-                <div style={{fontSize: '15px', marginRight:450, marginTop:0}}>
+                <div style={{fontSize: '15px', marginLeft:20, marginTop:0}}>
                     Device ID - {jsons[1]['device_id']}
                 </div>
-                <div style={{fontSize: '15px', marginRight:450, marginTop:0}}>
+                <div style={{fontSize: '15px', marginLeft:20, marginTop:0}}>
                     Start Time - {date1.toLocaleTimeString()} - {date1.toLocaleDateString()}
                 </div>
             </div>
@@ -89,11 +100,11 @@ const GraphPage: React.FC<Props> = ({jsons}) => {
     var renderGraphs = (
         <div>
             <div className="main-chart">
-                <MyLineChart data={heart_rate} json1={jsons[0]} json2={jsons[1]} type='heart_rate' /> 
+                <MyLineChart data={data} json1={jsons[0]} json2={jsons[1]} type={chosenData} /> 
             </div>
             <div className="small-chart">
                 <MyPieChart data={events0} dkOne='value' />
-                <MyLineChart data={distance} json1={jsons[0]} json2={jsons[1]} size='small' type='distance' />
+                {/* <MyLineChart data={distance} json1={jsons[0]} json2={jsons[1]} size='small' type='distance' /> */}
                 <MyPieChart data={events1} dkOne='value' />
             </div>
         </div>
@@ -101,26 +112,22 @@ const GraphPage: React.FC<Props> = ({jsons}) => {
 
     if (individual) {
         renderGraphs = (
-            <div>
-                <div className='container'>
-                    <div className='half-container'>
-                        <div className='medium-chart'>
-                            <MyLineChart data={convertData(jsons[0]['workout']['heart_rate']['data'])} json1={jsons[0]} size='small'/> 
-                        </div>
-                        <div className="small-chart">
-                            <MyPieChart data={events0} dkOne='value' />
-                            <MyLineChart data={convertData(jsons[0]['workout']['distance']['data'])} json1={jsons[0]} size='tiny' type='distance'/> 
-                        </div>
+            <div style={{ display:'flex' }}>
+                <div style={{ width:'50%', float:'left' }}>
+                    <div className='medium-chart'>
+                        <MyLineChart data={convertData(jsons[0]['workout'][chosenData]['data'])} json1={jsons[0]} type={chosenData} size='small'/> 
                     </div>
-                    <div className='vertical-bar'></div>
-                    <div className='half-container'>
-                        <div className='medium-chart'>
-                            <MyLineChart data={convertData(jsons[1]['workout']['heart_rate']['data'])} json1={jsons[1]} size='small'/> 
-                        </div>
-                        <div className="small-chart">
-                            <MyPieChart data={events1} dkOne='value' />
-                            <MyLineChart data={convertData(jsons[1]['workout']['distance']['data'])} json1={jsons[1]} size='tiny' type='distance'/> 
-                        </div>
+                    <div className="small-chart">
+                        <MyPieChart data={events0} dkOne='value' />
+                    </div>
+                </div>
+                <div className='vertical-bar'></div>
+                <div style={{ width:'50%', float:'right' }}>
+                    <div className='medium-chart'>
+                        <MyLineChart data={convertData(jsons[1]['workout'][chosenData]['data'])} type={chosenData} json1={jsons[1]} size='small'/> 
+                    </div>
+                    <div className="small-chart">
+                        <MyPieChart data={events1} dkOne='value' />
                     </div>
                 </div>
             </div>
@@ -128,7 +135,7 @@ const GraphPage: React.FC<Props> = ({jsons}) => {
     }
 
     return (
-        <div>
+        <div style={{ paddingBottom:16 }}>
             <AppBar position="static" >
                 <Toolbar sx={{ justifyContent: "space-between"}}>
                 <Typography variant="h4" component="div" sx={{my:1, marginLeft:1, marginRight:-90}}>
@@ -136,7 +143,20 @@ const GraphPage: React.FC<Props> = ({jsons}) => {
                 </Typography>
                 <div />
                 <Button variant="contained" onClick={() => setIndividual(!individual)}>{individual ? "Combine Data" : "Separate Data"}</Button>
-                <Button variant="contained" disabled>Filters</Button>
+                <Button variant="contained" onClick={() => setFiltersDialog(true)}>Options</Button>
+                <Dialog open={filtersDialog} onClose={() => setFiltersDialog(false)}>
+                    <DialogTitle>Select Metric</DialogTitle>
+                    <DialogContent>
+                        <Button variant='text' onClick={() => setChosenData('heart_rate')}>Heart Rate</Button>
+                        <Button variant='text' onClick={() => setChosenData('distance')}>Distance</Button>
+                        <Button variant='text' onClick={() => setChosenData('steps')}>Steps</Button>
+                        <Button variant='text' onClick={() => setChosenData('calories')}>Calories</Button>
+                        <Button variant='text' onClick={() => setChosenData('speed')}>Speed</Button>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => setFiltersDialog(false)}>Exit</Button>
+                    </DialogActions>
+                </Dialog>
                 </Toolbar>
             </AppBar>
             <div style={{fontSize:'40px', marginLeft:20,  marginTop:20}}>
@@ -144,6 +164,7 @@ const GraphPage: React.FC<Props> = ({jsons}) => {
             </div>
             {header}
             {renderGraphs}
+            <Button startIcon={<ArrowBack/>} sx={{ marginLeft:5 }} variant="contained" onClick={() => updateFiles([])}>Back</Button>
     </div>
     )
 }

@@ -4,6 +4,17 @@ import FileInput from "../FileInput";
 import { useState } from "react";
 import DatabasePage from './DatabasePage'
 import DatabaseHandler from "../Handlers/DatabaseHandler";
+import * as XLSX from 'xlsx';
+import flatten from 'flat';
+
+function exportToExcel(data: any[], filePath: string) {
+    const flattenedData = data.map((item) => flatten(item, { delimiter: '_' }));
+    const keys = Object.keys(flattenedData[0] as any);
+    const worksheet = XLSX.utils.json_to_sheet(flattenedData, { header: keys });
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Console Logs');
+    XLSX.writeFile(workbook, filePath);
+  }
 
 const styles = {
     bg_container: {
@@ -47,8 +58,37 @@ const UploadPage: React.FC<Props> = ({passFiles}) => {
 
     DatabaseHandler.getDatabaseEntries()
     .then((result: any[]) => {
+        result.sort((a, b) => {
+            var timestampA: number
+            var timestampB: number 
+
+            try {
+                if (typeof a['workout']['start_timestamp'] === 'number') {
+                    timestampA = a['workout']['start_timestamp'];
+                } else {
+                    timestampA = 0
+                }
+            } catch (e) {
+                timestampA = 0
+            }
+
+            try {
+                if (typeof b['workout']['start_timestamp'] === 'number') {
+                    timestampB = b['workout']['start_timestamp'];
+                } else {
+                    timestampB = 0
+                }
+            } catch (e) {
+                timestampB = 0
+            }
+        
+            return timestampB - timestampA;  
+        })
+
         data = result
-        console.log(data.slice(1))
+        //exportToExcel(data.slice(1), "console-log-res.xlsx");
+        // console.log(data.slice(1))
+        console.log(data)
     })
     .catch((e: any) => {
         console.log(e);
@@ -71,8 +111,8 @@ const UploadPage: React.FC<Props> = ({passFiles}) => {
     if (dbPage) {
         renderUpload = (
             <div style={styles.buttons}>
-                <Button style={styles.backArrow} onClick={() => {setdbPage(false)}}variant='contained' startIcon={<ArrowBack/>}>Back</Button>
-                <DatabasePage passFiles={passFiles} data={data.slice(1)}/>
+                <Button style={styles.backArrow} onClick={() => {setdbPage(false)}} variant='contained' startIcon={<ArrowBack/>}>Back</Button>
+                <DatabasePage passFiles={passFiles} data={data}/>
             </div>
         )
     }

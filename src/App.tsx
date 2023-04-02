@@ -12,7 +12,7 @@ function App() {
 
   return (
     <div>
-      {files.length === 0 ? <UploadPage passFiles={passFiles}/> : <GraphPage jsons={files}/>}
+      {files.length === 0 ? <UploadPage passFiles={passFiles}/> : <GraphPage updateFiles={passFiles} jsons={files}/>}
     </div>
   );
 }
