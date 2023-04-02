@@ -1,4 +1,4 @@
-import { Tooltip, Pie, PieChart, Cell } from 'recharts';
+import { Tooltip, Pie, PieChart, Cell, Legend } from 'recharts';
 
 const COLORS: string[] = ['#2196f3', '#000000', '#4caf50', '#808080', '#FF0000', '#A020F0', '#FFFF00'];
 const RADIAN = Math.PI / 180;
@@ -103,12 +103,10 @@ const MyPieChart = ( props: ChartProps ) => {
     return finalData;
   }
 
-  
-  
   const piedata = filterEventsWithType3(data);
   const f = makeData(piedata);
   return(
-    <PieChart width={250} height={250}>
+    <PieChart width={400} height={400}>
       <Pie
       data={f}
       cx="50%"
@@ -123,6 +121,7 @@ const MyPieChart = ( props: ChartProps ) => {
       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
       ))}
       </Pie>
+      <Legend/>
       <Tooltip/>
     </PieChart>
   );
