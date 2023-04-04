@@ -3,9 +3,13 @@ import MyBarChart from "../Charts/MyBarChart"
 import MyLineChart from "../Charts/MyLineChart"
 import MyPieChart from "../Charts/MyPieChart"
 import FileInput from "../FileInput"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { ArrowBack } from "@mui/icons-material"
+import MyComposedChart from "../Charts/MyComposedChart"
+import getElevation from "../Handlers/ElevationHandler"
+import { isTemplateMiddleOrTemplateTail } from "typescript"
 
+// Merges data from both JSONS to be read by recharts
 const mergeData = (json1: any[], json2: any[]) => {
     let merged: {[key: number]: {value1?: number, value2?:number}} = {};
 
@@ -38,7 +42,6 @@ const convertData = (data: any[]) => {
         }
     })
 }
-
 interface Props {
     jsons: any[]
     updateFiles: (arg: any) => void
@@ -48,17 +51,56 @@ const GraphPage: React.FC<Props> = ({jsons, updateFiles}) => {
     const [individual, setIndividual] = useState<boolean>(false)
     const [filtersDialog, setFiltersDialog] = useState<boolean>(false)
     const [chosenData, setChosenData] = useState<string>('heart_rate')
+    const [data, setData] = useState<any>(null)
 
-    var data: any
+    // Cycle through data in this order to display as default
     const dataOptions = ['heart_rate', 'distance', 'steps', 'calories', 'speed']
 
-    for (let i  = 1; i < dataOptions.length; i++) {
+    let tempData: any[]
+    for (let i = 1; i < dataOptions.length; i++) {
         try {
-            data = mergeData(jsons[0]['workout'][chosenData]['data'], jsons[1]['workout'][chosenData]['data'])
+            tempData = mergeData(jsons[0]['workout'][chosenData]['data'], jsons[1]['workout'][chosenData]['data'])
             break
         } catch(e) {
             setChosenData(dataOptions[i])
         }
+    }
+
+    // Get elevation data
+    interface LatLng {
+        lat: number;
+        lng: number;
+    }
+
+    var locations: LatLng[] = [];
+
+    try {
+        for (let i = 0; i < jsons[0]['workout']['location']['data'].length; i++) {
+            const [lat, lng] = jsons[0]['workout']['location']['data'][i].value.split('/').map(Number)
+            locations.push({lat: lat, lng: lng});
+        }
+    } catch (e) {
+        locations = []
+    }
+
+    const fetchElevationData = async () => {
+        const elevationData: any = await getElevation(locations, tempData.length);
+
+        let temperData = tempData
+        for (let i = 0; i < temperData.length; i++) {
+            temperData[i].elevation = elevationData.results[i].elevation;
+        }
+        setData(temperData);
+        console.log(temperData)
+    }
+
+    useEffect(() => {
+        fetchElevationData();
+    }, [])
+
+    const updateData = (chosenData: string) => {
+        setChosenData(chosenData)
+        fetchElevationData();
     }
 
     const events0 = (jsons[0]['events'])
@@ -100,7 +142,8 @@ const GraphPage: React.FC<Props> = ({jsons, updateFiles}) => {
     var renderGraphs = (
         <div>
             <div className="main-chart">
-                <MyLineChart data={data} json1={jsons[0]} json2={jsons[1]} type={chosenData} /> 
+                {/* <MyLineChart data={data} json1={jsons[0]} json2={jsons[1]} type={chosenData} />  */}
+                <MyComposedChart data={data} json1={jsons[0]} json2={jsons[1]} type={chosenData} />
             </div>
             <div className="small-chart">
                 <MyPieChart data={events0} dkOne='value' />
@@ -147,11 +190,11 @@ const GraphPage: React.FC<Props> = ({jsons, updateFiles}) => {
                 <Dialog open={filtersDialog} onClose={() => setFiltersDialog(false)}>
                     <DialogTitle>Select Metric</DialogTitle>
                     <DialogContent>
-                        <Button variant='text' onClick={() => setChosenData('heart_rate')}>Heart Rate</Button>
-                        <Button variant='text' onClick={() => setChosenData('distance')}>Distance</Button>
-                        <Button variant='text' onClick={() => setChosenData('steps')}>Steps</Button>
-                        <Button variant='text' onClick={() => setChosenData('calories')}>Calories</Button>
-                        <Button variant='text' onClick={() => setChosenData('speed')}>Speed</Button>
+                        <Button variant='text' onClick={() => updateData('heart_rate')}>Heart Rate</Button>
+                        <Button variant='text' onClick={() => updateData('distance')}>Distance</Button>
+                        <Button variant='text' onClick={() => updateData('steps')}>Steps</Button>
+                        <Button variant='text' onClick={() => updateData('calories')}>Calories</Button>
+                        <Button variant='text' onClick={() => updateData('speed')}>Speed</Button>
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={() => setFiltersDialog(false)}>Exit</Button>

@@ -8,6 +8,18 @@ type ChartProps = {
     size?: string;
 }
 
+interface Labels {
+    [key: string]: string;
+}
+
+const labels: Labels = {
+    'heart_rate': 'Heart Rate (bpm)',
+    'distance': 'Distance (m)',
+    'steps': "Steps",
+    'calories': "Calories (kcal)",
+    'speed': 'Speed (km/h)'
+}
+
 const MyLineChart = ( props: ChartProps ) => {
     const { data, json1, json2 = null, type = 'heart_rate', size = 'large' } = props;
 
@@ -21,6 +33,8 @@ const MyLineChart = ( props: ChartProps ) => {
         width = 400
         height = 250
     }
+
+    const label = labels[type]
 
     var renderData = (
         <LineChart
@@ -39,7 +53,7 @@ const MyLineChart = ( props: ChartProps ) => {
             <Label value="Time" offset={-10} position="insideBottomLeft" />
         </XAxis>
         <YAxis domain={['dataMin - 5', 'dataMax + 5']}>
-            <Label value={type === 'heart_rate' ? 'Heart Rate (bpm)' : 'Distance (m)'} offset={20} position= 'insideBottomLeft' angle={-90}/>
+            <Label value={label} offset={20} position= 'insideBottomLeft' angle={-90}/>
         </YAxis>
         <Tooltip />
         <Legend />
@@ -66,7 +80,7 @@ const MyLineChart = ( props: ChartProps ) => {
                 <Label value="Time" offset={-10} position="insideBottomLeft" />
             </XAxis>
             <YAxis domain={['dataMin - 5', 'dataMax + 5']}>
-                <Label value={type === 'heart_rate' ? 'Heart Rate (bpm)' : 'Distance (m)'} offset={20} position= 'insideBottomLeft' angle={-90}/>
+                <Label value={label} offset={20} position= 'insideBottomLeft' angle={-90}/>
             </YAxis>
             <Tooltip />
             <Legend />
