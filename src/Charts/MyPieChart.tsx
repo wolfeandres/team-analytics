@@ -56,7 +56,7 @@ const MyPieChart = ( props: ChartProps ) => {
     name?: string;
     value: number;
   }
-  
+
   function filterEventsWithType3(events: Event[]): EventSubset[] {
     const result: EventSubset[] = [];
     
@@ -93,18 +93,38 @@ const MyPieChart = ( props: ChartProps ) => {
 
   function makeData(result: EventSubset[]): finalData[]{
     const finalData: finalData[] = [];
-
+    
     for(let i = 1; i < result.length; i++)
     {
       const dif = result[i].timestamp - result[i -1].timestamp
       const d = {name: result[i-1].current_page, value: dif}
-      finalData.push(d);
+      for(let j = 1; j < finalData.length; j++)
+      {
+        if(d.name === finalData[j].name)
+        {
+          finalData[j].value += d.value;
+          break;
+        }
+        else if(j === finalData.length-1){
+          finalData.push(d);
+        }
+      }
+      if(1 >= finalData.length){
+        finalData.push(d);
+      }
+    
+    }
+    if(finalData[0].name == null)
+    {
+      finalData[0].name = "home_page"
     }
     return finalData;
   }
 
+
   const piedata = filterEventsWithType3(data);
   const f = makeData(piedata);
+
   return(
     <PieChart width={400} height={400}>
       <Pie
