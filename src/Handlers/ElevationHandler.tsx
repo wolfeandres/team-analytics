@@ -21,7 +21,6 @@ function getElevation(path: LatLng[], pathLength: number): any[] {
         path: path,
         samples: pathLength,
     }).then(function (response: any) {
-       console.log(response)
        return response;
      })
      .catch(async function (error: any) {

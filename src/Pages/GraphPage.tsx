@@ -1,29 +1,136 @@
-import { AppBar, Toolbar, Typography, Button, IconButton, Dialog, DialogTitle, DialogContent, DialogContentText, FormControlLabel, DialogActions, Checkbox } from "@mui/material"
-import MyBarChart from "../Charts/MyBarChart"
+import { AppBar, Toolbar, Typography, Button, Dialog, DialogTitle, DialogContent, FormControlLabel, DialogActions, Checkbox, FormGroup } from "@mui/material"
 import MyLineChart from "../Charts/MyLineChart"
 import MyPieChart from "../Charts/MyPieChart"
-import FileInput from "../FileInput"
 import { useEffect, useState } from "react"
 import { ArrowBack } from "@mui/icons-material"
 import MyComposedChart from "../Charts/MyComposedChart"
 import getElevation from "../Handlers/ElevationHandler"
-import { isTemplateMiddleOrTemplateTail } from "typescript"
+
+var disabled = {
+    heart_rate: false,
+    distance: false,
+    steps: false,
+    calories: false,
+    speed: false,
+    power: false,
+    elevation: false
+}
 
 // Merges data from both JSONS to be read by recharts
-const mergeData = (json1: any[], json2: any[]) => {
-    let merged: {[key: number]: {value1?: number, value2?:number}} = {};
+const mergeData = (json1: any, json2: any) => {
+    let merged: {[key: number]: {
+        heartRate1?: number,
+        heartRate2?: number,
+        distance1?: number,
+        distance2?: number,
+        steps1?: number,
+        steps2?: number,
+        calories1?: number,
+        calories2?: number,
+        speed1?: number,
+        speed2?: number,
+    }} = {};
 
-    json1.forEach(item => {
-        merged[item.timestamp] = { value1: Math.trunc(item.value * 100) / 100 }
-    })
+    // HeartRate
+    try {
+        json1['workout']['heart_rate']['data'].forEach((item: { timestamp: number; value: number }) => {
+            merged[item.timestamp] = { heartRate1: Math.trunc(item.value * 100) / 100 }
+        })
+    
+        json2['workout']['heart_rate']['data'].forEach((item: { timestamp: number; value: number }) => {
+            if (merged[item.timestamp]) {
+                merged[item.timestamp].heartRate2 = Math.trunc(item.value * 100) / 100
+            } else {
+                merged[item.timestamp] = { heartRate2: Math.trunc(item.value * 100) / 100}
+            }
+        })
+    } catch (e) {
+        disabled['heart_rate'] = true
+    }
 
-    json2.forEach(item => {
-        if (merged[item.timestamp]) {
-            merged[item.timestamp].value2 = Math.trunc(item.value * 100) / 100
-        } else {
-            merged[item.timestamp] = { value2: Math.trunc(item.value * 100) / 100}
-        }
-    })
+    // Distance
+    try {
+        json1['workout']['distance']['data'].forEach((item: { timestamp: number; value: number }) => {
+            if (merged[item.timestamp]) {
+                merged[item.timestamp].distance1 = Math.trunc(item.value * 100) / 100
+            } else {
+                merged[item.timestamp] = { distance1: Math.trunc(item.value * 100) / 100}
+            }
+        })
+    
+        json2['workout']['distance']['data'].forEach((item: { timestamp: number; value: number }) => {
+            if (merged[item.timestamp]) {
+                merged[item.timestamp].distance2 = Math.trunc(item.value * 100) / 100
+            } else {
+                merged[item.timestamp] = { distance2: Math.trunc(item.value * 100) / 100}
+            }
+        })
+    } catch (e) {
+        disabled['distance'] = true
+    }
+
+    // Steps
+    try {
+        json1['workout']['steps']['data'].forEach((item: { timestamp: number; value: number }) => {
+            if (merged[item.timestamp]) {
+                merged[item.timestamp].steps1 = Math.trunc(item.value * 100) / 100
+            } else {
+                merged[item.timestamp] = { steps1: Math.trunc(item.value * 100) / 100}
+            }
+        })
+    
+        json2['workout']['steps']['data'].forEach((item: { timestamp: number; value: number }) => {
+            if (merged[item.timestamp]) {
+                merged[item.timestamp].steps2 = Math.trunc(item.value * 100) / 100
+            } else {
+                merged[item.timestamp] = { steps2: Math.trunc(item.value * 100) / 100}
+            }
+        })
+    } catch (e) {
+        disabled['steps'] = true
+    }
+
+    // Calories
+    try {
+        json1['workout']['calories']['data'].forEach((item: { timestamp: number; value: number }) => {
+            if (merged[item.timestamp]) {
+                merged[item.timestamp].calories1 = Math.trunc(item.value * 100) / 100
+            } else {
+                merged[item.timestamp] = { calories1: Math.trunc(item.value * 100) / 100}
+            }
+        })
+    
+        json2['workout']['calories']['data'].forEach((item: { timestamp: number; value: number }) => {
+            if (merged[item.timestamp]) {
+                merged[item.timestamp].calories2 = Math.trunc(item.value * 100) / 100
+            } else {
+                merged[item.timestamp] = { calories2: Math.trunc(item.value * 100) / 100}
+            }
+        })
+    } catch (e) {
+        disabled['calories'] = true
+    }
+
+    // Speed
+    try {
+        json1['workout']['speed']['data'].forEach((item: { timestamp: number; value: number }) => {
+            if (merged[item.timestamp]) {
+                merged[item.timestamp].speed1 = Math.trunc(item.value * 100) / 100
+            } else {
+                merged[item.timestamp] = { speed1: Math.trunc(item.value * 100) / 100}
+            }
+        })
+    
+        json2['workout']['speed']['data'].forEach((item: { timestamp: number; value: number }) => {
+            if (merged[item.timestamp]) {
+                merged[item.timestamp].speed2 = Math.trunc(item.value * 100) / 100
+            } else {
+                merged[item.timestamp] = { speed2: Math.trunc(item.value * 100) / 100}
+            }
+        })
+    } catch (e) {
+        disabled['speed'] = true
+    }
 
     let result: any[] = []
     for (const timestamp in merged) {
@@ -47,24 +154,33 @@ interface Props {
     updateFiles: (arg: any) => void
 }
 
+interface Options {
+    heart_rate: boolean;
+    distance: boolean;
+    steps: boolean;
+    calories: boolean;
+    speed: boolean;
+    power: boolean;
+    elevation: boolean;
+  }
+
 const GraphPage: React.FC<Props> = ({jsons, updateFiles}) => {
     const [individual, setIndividual] = useState<boolean>(false)
     const [filtersDialog, setFiltersDialog] = useState<boolean>(false)
-    const [chosenData, setChosenData] = useState<string>('heart_rate')
     const [data, setData] = useState<any>(null)
+    const [locData, setLocData] = useState<any[]>([])
+    const [isLocSet, setIsLocSet] = useState<boolean>(false)
+    const [options, setOptions] = useState<Options>({
+        heart_rate: true,
+        distance: false,
+        steps: false,
+        calories: false,
+        speed: false,
+        power: false,
+        elevation: true
+    })
 
-    // Cycle through data in this order to display as default
-    const dataOptions = ['heart_rate', 'distance', 'steps', 'calories', 'speed']
-
-    let tempData: any[]
-    for (let i = 1; i < dataOptions.length; i++) {
-        try {
-            tempData = mergeData(jsons[0]['workout'][chosenData]['data'], jsons[1]['workout'][chosenData]['data'])
-            break
-        } catch(e) {
-            setChosenData(dataOptions[i])
-        }
-    }
+    let tempData = mergeData(jsons[0], jsons[1])
 
     // Get elevation data
     interface LatLng {
@@ -84,12 +200,26 @@ const GraphPage: React.FC<Props> = ({jsons, updateFiles}) => {
     }
 
     const fetchElevationData = async () => {
-        const elevationData: any = await getElevation(locations, tempData.length);
-
         let temperData = tempData
-        for (let i = 0; i < temperData.length; i++) {
-            temperData[i].elevation = elevationData.results[i].elevation;
+        
+        if (isLocSet) {
+            for (let i = 0; i < temperData.length; i++) {
+                temperData[i].elevation = locData[i];
+            }
         }
+
+        if (locations.length > 1 && isLocSet === false) {
+            const elevationData: any = await getElevation(locations, tempData.length);
+
+            let tempElevationData = []
+            for (let i = 0; i < temperData.length; i++) {
+                temperData[i].elevation = elevationData.results[i].elevation;
+                tempElevationData.push(elevationData.results[i].elevation);
+            }
+            setLocData(tempElevationData)
+            setIsLocSet(true)
+        }
+
         setData(temperData);
         console.log(temperData)
     }
@@ -97,11 +227,6 @@ const GraphPage: React.FC<Props> = ({jsons, updateFiles}) => {
     useEffect(() => {
         fetchElevationData();
     }, [])
-
-    const updateData = (chosenData: string) => {
-        setChosenData(chosenData)
-        fetchElevationData();
-    }
 
     const events0 = (jsons[0]['events'])
     const events1 = (jsons[1]['events'])
@@ -142,12 +267,10 @@ const GraphPage: React.FC<Props> = ({jsons, updateFiles}) => {
     var renderGraphs = (
         <div>
             <div className="main-chart">
-                {/* <MyLineChart data={data} json1={jsons[0]} json2={jsons[1]} type={chosenData} />  */}
-                <MyComposedChart data={data} json1={jsons[0]} json2={jsons[1]} type={chosenData} />
+                <MyComposedChart data={data} json1={jsons[0]} json2={jsons[1]} options={options} />
             </div>
             <div className="small-chart">
                 <MyPieChart data={events0} dkOne='value' />
-                {/* <MyLineChart data={distance} json1={jsons[0]} json2={jsons[1]} size='small' type='distance' /> */}
                 <MyPieChart data={events1} dkOne='value' />
             </div>
         </div>
@@ -158,7 +281,7 @@ const GraphPage: React.FC<Props> = ({jsons, updateFiles}) => {
             <div style={{ display:'flex' }}>
                 <div style={{ width:'50%', float:'left' }}>
                     <div className='medium-chart'>
-                        <MyLineChart data={convertData(jsons[0]['workout'][chosenData]['data'])} json1={jsons[0]} type={chosenData} size='small'/> 
+                        {/* <MyLineChart data={convertData(jsons[0]['workout'][chosenData]['data'])} json1={jsons[0]} type={chosenData} size='small'/>  */}
                     </div>
                     <div className="small-chart">
                         <MyPieChart data={events0} dkOne='value' />
@@ -167,7 +290,7 @@ const GraphPage: React.FC<Props> = ({jsons, updateFiles}) => {
                 <div className='vertical-bar'></div>
                 <div style={{ width:'50%', float:'right' }}>
                     <div className='medium-chart'>
-                        <MyLineChart data={convertData(jsons[1]['workout'][chosenData]['data'])} type={chosenData} json1={jsons[1]} size='small'/> 
+                        {/* <MyLineChart data={convertData(jsons[1]['workout'][chosenData]['data'])} type={chosenData} json1={jsons[1]} size='small'/>  */}
                     </div>
                     <div className="small-chart">
                         <MyPieChart data={events1} dkOne='value' />
@@ -177,9 +300,16 @@ const GraphPage: React.FC<Props> = ({jsons, updateFiles}) => {
         )
     }
 
+    const handleCheckbox = (option: keyof Options) => {
+        setOptions(prevOptions => ({
+            ...prevOptions,
+            [option]: !prevOptions[option]
+        }))
+    }
+
     return (
         <div style={{ paddingBottom:16 }}>
-            <AppBar position="static" >
+            <AppBar>
                 <Toolbar sx={{ justifyContent: "space-between"}}>
                 <Typography variant="h4" component="div" sx={{my:1, marginLeft:1, marginRight:-90}}>
                     Online Dashboard
@@ -188,13 +318,16 @@ const GraphPage: React.FC<Props> = ({jsons, updateFiles}) => {
                 <Button variant="contained" onClick={() => setIndividual(!individual)}>{individual ? "Combine Data" : "Separate Data"}</Button>
                 <Button variant="contained" onClick={() => setFiltersDialog(true)}>Options</Button>
                 <Dialog open={filtersDialog} onClose={() => setFiltersDialog(false)}>
-                    <DialogTitle>Select Metric</DialogTitle>
+                    <DialogTitle>Select Metrics</DialogTitle>
                     <DialogContent>
-                        <Button variant='text' onClick={() => updateData('heart_rate')}>Heart Rate</Button>
-                        <Button variant='text' onClick={() => updateData('distance')}>Distance</Button>
-                        <Button variant='text' onClick={() => updateData('steps')}>Steps</Button>
-                        <Button variant='text' onClick={() => updateData('calories')}>Calories</Button>
-                        <Button variant='text' onClick={() => updateData('speed')}>Speed</Button>
+                        <FormGroup>
+                            <FormControlLabel control={<Checkbox disabled={disabled['heart_rate']} checked={options['heart_rate']} onChange={() => handleCheckbox('heart_rate')} />} label='Heart Rate'/>
+                            <FormControlLabel control={<Checkbox disabled={disabled['distance']} checked={options['distance']} onChange={() => handleCheckbox('distance')} />} label='Distance'/>
+                            <FormControlLabel control={<Checkbox disabled={disabled['steps']} checked={options['steps']} onChange={() => handleCheckbox('steps')}/>} label='Steps'/>
+                            <FormControlLabel control={<Checkbox disabled={disabled['calories']} checked={options['calories']} onChange={() => handleCheckbox('calories')}/>} label='Calories'/>
+                            <FormControlLabel control={<Checkbox disabled={disabled['speed']} checked={options['speed']} onChange={() => handleCheckbox('speed')}/>} label='Speed'/>
+                            <FormControlLabel control={<Checkbox disabled={disabled['elevation']} checked={options['elevation']} onChange={() => handleCheckbox('elevation')}/>} label='Elevation'/>
+                        </FormGroup>
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={() => setFiltersDialog(false)}>Exit</Button>

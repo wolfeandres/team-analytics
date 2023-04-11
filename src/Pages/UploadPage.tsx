@@ -97,7 +97,7 @@ const UploadPage: React.FC<Props> = ({passFiles}) => {
         <div style={styles.buttons}>
             <Box mb={1}>
                 <Button variant='contained' style={styles.button} endIcon={<FileUpload/>} component='label'>
-                    Browse
+                    Upload
                     <FileInput passFiles={passFiles}/>
                 </Button>
             </Box>
@@ -118,7 +118,7 @@ const UploadPage: React.FC<Props> = ({passFiles}) => {
 
     return (
         <div>
-            <AppBar position="static">
+            <AppBar>
                 <Toolbar>
                     <Typography variant="h4" component="div" sx={{my:1, marginLeft:1}}>
                         Upload Partner Workout
