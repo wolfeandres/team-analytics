@@ -59,9 +59,11 @@ const UploadPage: React.FC<Props> = ({passFiles}) => {
     DatabaseHandler.getDatabaseEntries()
     .then((result: any[]) => {
         result.sort((a, b) => {
+            // Sort database entries by timestamp
             var timestampA: number
             var timestampB: number 
 
+            // If the timestamp format is wrong set to 0
             try {
                 if (typeof a['workout']['start_timestamp'] === 'number') {
                     timestampA = a['workout']['start_timestamp'];

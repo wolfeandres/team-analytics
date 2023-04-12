@@ -6,6 +6,7 @@ import { ArrowBack } from "@mui/icons-material"
 import MyComposedChart from "../Charts/MyComposedChart"
 import getElevation from "../Handlers/ElevationHandler"
 
+// Within the mergeData function, checks are made that disable unusable data
 var disabled = {
     heart_rate: false,
     distance: false,
@@ -29,6 +30,8 @@ const mergeData = (json1: any, json2: any) => {
         calories2?: number,
         speed1?: number,
         speed2?: number,
+        power1?: number,
+        power2?: number,
     }} = {};
 
     // HeartRate
@@ -130,6 +133,27 @@ const mergeData = (json1: any, json2: any) => {
         })
     } catch (e) {
         disabled['speed'] = true
+    }
+
+    // Power
+    try {
+        json1['workout']['power']['data'].forEach((item: { timestamp: number; value: number }) => {
+            if (merged[item.timestamp]) {
+                merged[item.timestamp].power1 = Math.trunc(item.value * 100) / 100
+            } else {
+                merged[item.timestamp] = { power1: Math.trunc(item.value * 100) / 100}
+            }
+        })
+    
+        json2['workout']['power']['data'].forEach((item: { timestamp: number; value: number }) => {
+            if (merged[item.timestamp]) {
+                merged[item.timestamp].power2 = Math.trunc(item.value * 100) / 100
+            } else {
+                merged[item.timestamp] = { power2: Math.trunc(item.value * 100) / 100}
+            }
+        })
+    } catch (e) {
+        disabled['power'] = true
     }
 
     let result: any[] = []
@@ -281,7 +305,7 @@ const GraphPage: React.FC<Props> = ({jsons, updateFiles}) => {
             <div style={{ display:'flex' }}>
                 <div style={{ width:'50%', float:'left' }}>
                     <div className='medium-chart'>
-                        {/* <MyLineChart data={convertData(jsons[0]['workout'][chosenData]['data'])} json1={jsons[0]} type={chosenData} size='small'/>  */}
+                        <MyComposedChart data={data} json1={jsons[0]} options={options} />
                     </div>
                     <div className="small-chart">
                         <MyPieChart data={events0} dkOne='value' />
@@ -290,7 +314,7 @@ const GraphPage: React.FC<Props> = ({jsons, updateFiles}) => {
                 <div className='vertical-bar'></div>
                 <div style={{ width:'50%', float:'right' }}>
                     <div className='medium-chart'>
-                        {/* <MyLineChart data={convertData(jsons[1]['workout'][chosenData]['data'])} type={chosenData} json1={jsons[1]} size='small'/>  */}
+                        <MyComposedChart data={data} json1={null} json2={jsons[1]} options={options} />
                     </div>
                     <div className="small-chart">
                         <MyPieChart data={events1} dkOne='value' />
@@ -326,6 +350,7 @@ const GraphPage: React.FC<Props> = ({jsons, updateFiles}) => {
                             <FormControlLabel control={<Checkbox disabled={disabled['steps']} checked={options['steps']} onChange={() => handleCheckbox('steps')}/>} label='Steps'/>
                             <FormControlLabel control={<Checkbox disabled={disabled['calories']} checked={options['calories']} onChange={() => handleCheckbox('calories')}/>} label='Calories'/>
                             <FormControlLabel control={<Checkbox disabled={disabled['speed']} checked={options['speed']} onChange={() => handleCheckbox('speed')}/>} label='Speed'/>
+                            <FormControlLabel control={<Checkbox disabled={disabled['power']} checked={options['power']} onChange={() => handleCheckbox('power')}/>} label='Power'/>
                             <FormControlLabel control={<Checkbox disabled={disabled['elevation']} checked={options['elevation']} onChange={() => handleCheckbox('elevation')}/>} label='Elevation'/>
                         </FormGroup>
                     </DialogContent>
