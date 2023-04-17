@@ -16,7 +16,8 @@ const labels: Labels = {
     'distance': ['Distance', 'm'],
     'steps': ['Steps', 'steps'],
     'calories': ['Calories', 'kcal'],
-    'speed': ['Speed', 'km/h']
+    'speed': ['Speed', 'km/h'],
+    'power': ['Power', '']
 }
 
 const MyComposedChart = ( props: ChartProps ) => {
@@ -29,10 +30,10 @@ const MyComposedChart = ( props: ChartProps ) => {
                 height={525}
                 data={data}
                 margin={{
-                    top: 20,
+                    top: 60,
                     right: 15,
                     left: 5,
-                    bottom: 10,
+                    bottom: 20,
                 }}
             >
                 <defs>
@@ -79,10 +80,10 @@ const MyComposedChart = ( props: ChartProps ) => {
             height={525}
             data={data}
             margin={{
-                top: 20,
+                top: 60,
                 right: 15,
                 left: 5,
-                bottom: 10,
+                bottom: 20,
             }}
         >
             <defs>

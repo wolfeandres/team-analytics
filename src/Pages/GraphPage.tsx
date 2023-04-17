@@ -332,7 +332,7 @@ const GraphPage: React.FC<Props> = ({jsons, updateFiles}) => {
     }
 
     return (
-        <div style={{ paddingBottom:16 }}>
+        <div style={{ paddingBottom:16}}>
             <AppBar>
                 <Toolbar sx={{ justifyContent: "space-between"}}>
                 <Typography variant="h4" component="div" sx={{my:1, marginLeft:1, marginRight:-90}}>
@@ -360,7 +360,7 @@ const GraphPage: React.FC<Props> = ({jsons, updateFiles}) => {
                 </Dialog>
                 </Toolbar>
             </AppBar>
-            <div style={{fontSize:'40px', marginLeft:20,  marginTop:20}}>
+            <div style={{fontSize:'40px', marginLeft:20,  marginTop:80}}>
                 {individual ? "Individual Data" : "Combined Data"}
             </div>
             {header}
