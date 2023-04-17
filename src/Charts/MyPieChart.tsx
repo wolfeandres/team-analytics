@@ -1,6 +1,6 @@
 import { Tooltip, Pie, PieChart, Cell, Legend } from 'recharts';
 
-const COLORS: string[] = ['#2196f3', '#000000', '#4caf50', '#808080', '#FF0000', '#A020F0', '#FFFF00'];
+const COLORS: string[] = ['#00bfaf', '#fc913a', '#765898', '#bada55', '#ffd700', '#ff4e50', '#87889c'];
 const RADIAN = Math.PI / 180;
 
 const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }: {
