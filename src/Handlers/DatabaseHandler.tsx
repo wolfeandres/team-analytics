@@ -2,7 +2,7 @@ import axios from 'axios';
 import JSONHandler from './JSONHandler';
 
 var app_id = "react-apiow";
-var api_key = "2DgFPqZB2s2ZxESQpjG1vNpW42ujyRufA1BOHlGpIvY3YlFibSmWQi6BYsWKD4zy";
+var api_key = "";
 
 // returns every JSON stores in the database
 function getDatabaseEntries() : Promise<Array<any>> {
@@ -58,7 +58,7 @@ function getDatabaseEntries() : Promise<Array<any>> {
 }
 
 // returns partner JSONs stored in the database
-function getPartnerJSON(json: { name: string, workout: { start_timestamp: any, partner: any}}) : Promise<any> {
+function getPartnerJSON(json: { name: string, workout: { start_timestamp: any, partners: [ any ]}}) : Promise<any> {
     try {
         var body = JSON.stringify({
             "key": api_key
@@ -75,7 +75,7 @@ function getPartnerJSON(json: { name: string, workout: { start_timestamp: any, p
         };
 
         console.log(json)
-        var partner_name = json.workout.partner.name;
+        var partner_name = json.workout.partners[0].name;
         var main_timestamp = json.workout.start_timestamp
         // send POST request and get the token for another request
         return axios(config)
