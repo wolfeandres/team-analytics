@@ -19,18 +19,24 @@ function getEvents (json: { events: any; }) {
 }
 
 // get the name of the partner
-function getPartnerName (json: { workout: any}) {
-    return json.workout.parner.name
+function getPartnerName (json: { workouts: any}) {
+
+    if (json.workouts != null && json.workouts.length > 0) {
+        return json.workouts[0].parner.name
+    }
+    return "null_name";
 }
 
 // compares two json files and returns if they are partner files
-function isPartnerJSON(json: { name: string, workout: { start_timestamp: any, partner: any}}, partner_json: { name: string, workout: { start_timestamp: any, partner: any}}) {
+function isPartnerJSON(json: { name: string, workout: { start_timestamp: any, partners: any}}, partner_json: { name: string, workout: { start_timestamp: any, partners: any}}) {
+    console.log(json);
+    console.log(partner_json);
     var name = json.name;
     var partner_name = partner_json.name;
 
     var workout_timestamp = json.workout.start_timestamp;
     var partner_workout_timestamp = partner_json.workout.start_timestamp
-    if (json.workout.partner.name == partner_name && partner_json.workout.partner.name == name) {
+    if (json.workout.partners[0].name == partner_name && partner_json.workout.partners[0].name == name) {
         if (Math.abs(workout_timestamp - partner_workout_timestamp) < 5) {
             return true;
         }
