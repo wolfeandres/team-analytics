@@ -1,7 +1,7 @@
-import { AppBar, Toolbar, Typography, Button, Dialog, DialogTitle, DialogContent, FormControlLabel, DialogActions, Checkbox, FormGroup } from "@mui/material"
+import { AppBar, Toolbar, Typography, Button, Dialog, Select, MenuItem, TextField, DialogTitle, DialogContent, DialogContentText, FormControlLabel, DialogActions, Checkbox, FormGroup } from "@mui/material"
 import MyLineChart from "../Charts/MyLineChart"
 import MyPieChart from "../Charts/MyPieChart"
-import { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import { ArrowBack } from "@mui/icons-material"
 import MyComposedChart from "../Charts/MyComposedChart"
 import getElevation from "../Handlers/ElevationHandler"
@@ -188,6 +188,12 @@ interface Options {
     elevation: boolean;
   }
 
+interface Query {
+    selected: string;
+    min: number;
+    max: number;
+}
+
 const GraphPage: React.FC<Props> = ({jsons, updateFiles}) => {
     const [individual, setIndividual] = useState<boolean>(false)
     const [filtersDialog, setFiltersDialog] = useState<boolean>(false)
@@ -195,7 +201,7 @@ const GraphPage: React.FC<Props> = ({jsons, updateFiles}) => {
     const [locData, setLocData] = useState<any[]>([])
     const [isLocSet, setIsLocSet] = useState<boolean>(false)
     const [options, setOptions] = useState<Options>({
-        heart_rate: true,
+        heart_rate: !disabled['heart_rate'] ? true : false,
         distance: false,
         steps: false,
         calories: false,
@@ -203,7 +209,18 @@ const GraphPage: React.FC<Props> = ({jsons, updateFiles}) => {
         power: false,
         elevation: true
     })
-
+    const [queryDialog, setQueryDialog] = useState<boolean>(false)
+    const [selectedQuery, setSelectedQuery] = useState<string>('')
+    const [minValue, setMinValue] = useState<number>(0)
+    const [maxValue, setMaxValue] = useState<number>(0)
+    const [minDialogError, setMinDialogError] = useState<boolean>(false)
+    const [maxDialogError, setMaxDialogError] = useState<boolean>(false)
+    const [query, setQuery] = useState<Query>({
+        selected: '',
+        min: 0,
+        max: 0
+    })
+    
     let tempData = mergeData(jsons[0], jsons[1])
 
     // Get elevation data
@@ -237,7 +254,7 @@ const GraphPage: React.FC<Props> = ({jsons, updateFiles}) => {
 
             let tempElevationData = []
             for (let i = 0; i < temperData.length; i++) {
-                temperData[i].elevation = elevationData.results[i].elevation;
+                temperData[i].elevation = Math.trunc(elevationData.results[i].elevation * 100) / 100;
                 tempElevationData.push(elevationData.results[i].elevation);
             }
             setLocData(tempElevationData)
@@ -291,7 +308,7 @@ const GraphPage: React.FC<Props> = ({jsons, updateFiles}) => {
     var renderGraphs = (
         <div>
             <div className="main-chart">
-                <MyComposedChart data={data} json1={jsons[0]} json2={jsons[1]} options={options} />
+                <MyComposedChart data={data} json1={jsons[0]} json2={jsons[1]} options={options} query={query} />
             </div>
             <div className="small-chart">
                 <MyPieChart data={events0} dkOne='value' />
@@ -305,7 +322,7 @@ const GraphPage: React.FC<Props> = ({jsons, updateFiles}) => {
             <div style={{ display:'flex' }}>
                 <div style={{ width:'50%', float:'left' }}>
                     <div className='medium-chart'>
-                        <MyComposedChart data={data} json1={jsons[0]} options={options} />
+                        <MyComposedChart data={data} json1={jsons[0]} options={options} query={query} />
                     </div>
                     <div className="small-chart">
                         <MyPieChart data={events0} dkOne='value' />
@@ -314,7 +331,7 @@ const GraphPage: React.FC<Props> = ({jsons, updateFiles}) => {
                 <div className='vertical-bar'></div>
                 <div style={{ width:'50%', float:'right' }}>
                     <div className='medium-chart'>
-                        <MyComposedChart data={data} json1={null} json2={jsons[1]} options={options} />
+                        <MyComposedChart data={data} json1={null} json2={jsons[1]} options={options} query={query}/>
                     </div>
                     <div className="small-chart">
                         <MyPieChart data={events1} dkOne='value' />
@@ -331,6 +348,59 @@ const GraphPage: React.FC<Props> = ({jsons, updateFiles}) => {
         }))
     }
 
+    const handleMin = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = parseInt(e.target.value)
+        if (!isNaN(value)) {
+            setMinValue(value)
+
+            if (minValue > maxValue) {
+                setMinDialogError(true)
+            } else {
+                setMinDialogError(false)
+            }
+        }
+    }
+
+    const handleMax = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = parseInt(e.target.value)
+        if (!isNaN(value)) {
+            setMaxValue(value)
+            if (maxValue < minValue) {
+                setMaxDialogError(true)
+            } else {
+                setMaxDialogError(false)
+            }
+        }
+    }
+
+    const handleClear = () => {
+        setMaxValue(0)
+        setMinValue(0)
+        setSelectedQuery('')
+    }
+
+    const handleQueryExit = () => {
+        if (!minDialogError && !maxDialogError) {
+            setQuery({
+                selected: selectedQuery,
+                min: minValue,
+                max: maxValue,
+            })
+            setQueryDialog(false)
+        }
+    }
+
+    const handleQueryClose = () => {
+        if (!minDialogError && !maxDialogError) {
+            setQuery({
+                selected: selectedQuery,
+                min: minValue,
+                max: maxValue,
+            })
+        }
+        setQueryDialog(false)
+    }
+
     return (
         <div style={{ paddingBottom:16}}>
             <AppBar>
@@ -340,6 +410,25 @@ const GraphPage: React.FC<Props> = ({jsons, updateFiles}) => {
                 </Typography>
                 <div />
                 <Button variant="contained" onClick={() => setIndividual(!individual)}>{individual ? "Combine Data" : "Separate Data"}</Button>
+                <Button variant="contained" onClick={() => setQueryDialog(true)}>Queries</Button>
+                <Dialog open={queryDialog} onClose={handleQueryClose}>
+                    <DialogContent>
+                        <Select label='Select Metric' value={selectedQuery} onChange={(e) => setSelectedQuery(e.target.value)} >
+                            <MenuItem disabled={disabled['heart_rate']} value='heart_rate'>Heart Rate</MenuItem>
+                            <MenuItem disabled={disabled['distance']} value='distance'>Distance</MenuItem>
+                            <MenuItem disabled={disabled['steps']} value='steps'>Steps</MenuItem>
+                            <MenuItem disabled={disabled['calories']} value='calories'>Calories</MenuItem>
+                            <MenuItem disabled={disabled['speed']} value='speed'>Speed</MenuItem>
+                            <MenuItem disabled={disabled['power']} value='power'>Power</MenuItem>
+                        </Select>
+                        <TextField error={minDialogError} helperText={minDialogError ? 'Min must be less than Max' : ''} type='number' inputProps={{ inputMode: 'numeric', pattern: '[0-9]*', allowemptyformatting:'true'}} label="Min Value" value={minValue} onChange={handleMin} />
+                        <TextField error={maxDialogError} helperText={maxDialogError ? 'Max must be greater than Min' : ''} type='number' inputProps={{ inputMode: 'numeric', pattern: '[0-9]*', allowemptyformatting:'true' }} label="Max Value" value={maxValue} onChange={handleMax} />
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleClear}>Clear</Button>
+                        <Button onClick={handleQueryExit}>Exit</Button>
+                    </DialogActions>
+                </Dialog>
                 <Button variant="contained" onClick={() => setFiltersDialog(true)}>Options</Button>
                 <Dialog open={filtersDialog} onClose={() => setFiltersDialog(false)}>
                     <DialogTitle>Select Metrics</DialogTitle>

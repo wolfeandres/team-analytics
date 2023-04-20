@@ -88,7 +88,8 @@ const UploadPage: React.FC<Props> = ({passFiles}) => {
         })
 
         data = result
-        //exportToExcel(data.slice(1), "console-log-res.xlsx");
+        console.log(data)
+        // exportToExcel(data, "console-log-res.xlsx");
         // console.log(data.slice(1))
     })
     .catch((e: any) => {
@@ -110,12 +111,16 @@ const UploadPage: React.FC<Props> = ({passFiles}) => {
     )
 
     if (dbPage) {
-        renderUpload = (
-            <div style={styles.buttons}>
-                <Button style={styles.backArrow} onClick={() => {setdbPage(false)}} variant='contained' startIcon={<ArrowBack/>}>Back</Button>
-                <DatabasePage passFiles={passFiles} data={data}/>
-            </div>
-        )
+        if (data) {
+            renderUpload = (
+                <div style={styles.buttons}>
+                    <Button style={styles.backArrow} onClick={() => {setdbPage(false)}} variant='contained' startIcon={<ArrowBack/>}>Back</Button>
+                    <DatabasePage passFiles={passFiles} data={data}/>
+                </div>
+            )
+        } else {
+            setdbPage(false)
+        }
     }
 
     return (

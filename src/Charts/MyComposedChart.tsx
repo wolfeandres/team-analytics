@@ -1,6 +1,98 @@
 import React from 'react';
 import { FaSquare } from 'react-icons/fa';
-import { Label, Line, CartesianGrid, XAxis, YAxis, Tooltip, Legend, ReferenceLine, Area, ResponsiveContainer, ComposedChart } from 'recharts';
+import { Label, Line, CartesianGrid, XAxis, YAxis, Tooltip, Legend, ReferenceLine, Area, ReferenceArea, ComposedChart } from 'recharts';
+
+function findTimestampRanges(data: any[], min: number, max: number, selected: string): [number, number][] {
+    const ranges: [number, number][] = [];
+    let currentRangeStart: number | null = null;
+  
+    if (selected === 'heart_rate') {
+        for (const { timestamp, heartRate1, heartRate2 } of data) {
+          if (heartRate1 >= min && heartRate1 <= max || heartRate2 >= min && heartRate2 <= max) {
+            if (currentRangeStart === null) {
+              currentRangeStart = timestamp;
+            }
+          } else {
+            if (currentRangeStart !== null) {
+              ranges.push([currentRangeStart, timestamp]);
+              currentRangeStart = null;
+            }
+          }
+        }
+    } else if (selected === 'distance') {
+        for (const { timestamp, distance1, distance2 } of data) {
+            if (distance1 >= min && distance1 <= max || distance2 >= min && distance2 <= max) {
+              if (currentRangeStart === null) {
+                currentRangeStart = timestamp;
+              }
+            } else {
+              if (currentRangeStart !== null) {
+                ranges.push([currentRangeStart, timestamp]);
+                currentRangeStart = null;
+              }
+            }
+          }
+    } else if (selected === 'steps') {
+        for (const { timestamp, steps1, steps2 } of data) {
+            if (steps1 >= min && steps1 <= max || steps2 >= min && steps2 <= max) {
+              if (currentRangeStart === null) {
+                currentRangeStart = timestamp;
+              }
+            } else {
+              if (currentRangeStart !== null) {
+                ranges.push([currentRangeStart, timestamp]);
+                currentRangeStart = null;
+              }
+            }
+          }
+    } else if (selected === 'calories') {
+        for (const { timestamp, calories1, calories2 } of data) {
+            if (calories1 >= min && calories1 <= max || calories2 >= min && calories2 <= max) {
+              if (currentRangeStart === null) {
+                currentRangeStart = timestamp;
+              }
+            } else {
+              if (currentRangeStart !== null) {
+                ranges.push([currentRangeStart, timestamp]);
+                currentRangeStart = null;
+              }
+            }
+          }
+    } else if (selected === 'speed') {
+        for (const { timestamp, speed1, speed2 } of data) {
+            if (speed1 >= min && speed1 <= max || speed2 >= min && speed2 <= max) {
+              if (currentRangeStart === null) {
+                currentRangeStart = timestamp;
+              }
+            } else {
+              if (currentRangeStart !== null) {
+                ranges.push([currentRangeStart, timestamp]);
+                currentRangeStart = null;
+              }
+            }
+          }
+    } else if (selected === 'power') {
+        for (const { timestamp, power1, power2 } of data) {
+            if (power1 >= min && power1 <= max || power2 >= min && power2 <= max) {
+              if (currentRangeStart === null) {
+                currentRangeStart = timestamp;
+              }
+            } else {
+              if (currentRangeStart !== null) {
+                ranges.push([currentRangeStart, timestamp]);
+                currentRangeStart = null;
+              }
+            }
+          }
+    }
+  
+    if (currentRangeStart !== null) {
+      ranges.push([currentRangeStart, data[data.length - 1].timestamp]);
+    }
+  
+    console.log(ranges)
+    return ranges;
+}
 
 type CustomLegendIconProps = {
     color: string;
@@ -19,13 +111,12 @@ const CustomLegendIcon2: React.FC<CustomLegendIconProps> = ({ color, selected })
     </svg>
 );
 
-
- 
 type ChartProps = {
     data: any[];
     json1: any;
     json2?: any;
     options: any;
+    query: any;
 }
 
 interface Labels {
@@ -41,7 +132,9 @@ const labels: Labels = {
 }
 
 const MyComposedChart = ( props: ChartProps ) => {
-    const { data, json1, json2 = null, options } = props;
+    const { data, json1, json2 = null, options, query} = props;
+
+    const ranges = findTimestampRanges(data, query.min, query.max, query.selected)
 
     return (
         <ComposedChart
@@ -141,8 +234,6 @@ const MyComposedChart = ( props: ChartProps ) => {
                 iconSize={0}
                 />
 
-
-
             <ReferenceLine y={options['heart_rate'] ? json1['workout']['heart_rate']['target_heart_rate'] : null} label={options['heart_rate'] ? "Target" : ''} stroke="#8884d8" ifOverflow='extendDomain' />
             <ReferenceLine y={options['heart_rate'] ? json2['workout']['heart_rate']['target_heart_rate'] : null} label={options['heart_rate'] ? "Target" : ''} stroke="#8884d8" ifOverflow='extendDomain' strokeDasharray='5 3' />
             <Area hide={!options['elevation']} unit='m' type='monotone' name='Elevation' yAxisId={1} dataKey='elevation' stroke='#66d0de' fill='url(#elevation)' fillOpacity={1}/>
@@ -156,6 +247,10 @@ const MyComposedChart = ( props: ChartProps ) => {
             <Line hide={!options['calories']} unit={labels['calories'][1]} name={json2['name'] + ' Calories'} type="monotone" dataKey='calories2' stroke="#55e081" yAxisId={4} dot={false} strokeDasharray='5 3'/>
             <Line hide={!options['speed']} unit={labels['speed'][1]} name={json1['name'] + ' Speed'} type="monotone" dataKey='speed1' stroke="#fa9b48" yAxisId={5} dot={false}/>
             <Line hide={!options['speed']} unit={labels['speed'][1]} name={json2['name'] + ' Speed'} type="monotone" dataKey='speed2' stroke="#fa9b48" yAxisId={5} dot={false} strokeDasharray='5 3'/>
+            {/* <ReferenceArea x1={(new Date(1680806770 * 1000)).toLocaleTimeString()} x2={(new Date(1680806783 * 1000)).toLocaleTimeString()} stroke='red' strokeOpacity={0.3} /> */}
+            {ranges.map((range, index) => (
+                <ReferenceArea key={index} x1={range[0]} x2={range[1]} stroke='red' strokeOpacity={0.3}/>
+            ))}
         </ComposedChart>
     )
 }

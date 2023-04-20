@@ -13,7 +13,7 @@ const renderRow = (props: ListChildComponentProps & { passFiles: (arg: any) => v
         console.log(data[index])
 
         try {
-            if (data[index].workout.partners.length === 0 || data[index].workout.partners[0].name === '' || data[index].workout.partners[0].name === null) {
+            if (data[index].workout.partners.length === 0 || data[index].workout.partners[0].name === '' || data[index].workout.partners[0].name === null || data[index].workout.partners[0].name === '{null}') {
                 partner = data[index]
             } else {
                 partner = await DatabaseHandler.getPartnerJSON(data[index])
