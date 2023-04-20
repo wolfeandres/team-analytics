@@ -209,7 +209,7 @@ const MyIComposedChart = ( props: ChartProps ) => {
 
     return (
             <ComposedChart
-            width={750}
+            width={700}
             height={525}
             data={data}
             margin={{
