@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react"
 import { ArrowBack } from "@mui/icons-material"
 import MyComposedChart from "../Charts/MyComposedChart"
 import getElevation from "../Handlers/ElevationHandler"
+import MyIComposedChart from "../Charts/MyIComposedChart"
 
 // Within the mergeData function, checks are made that disable unusable data
 var disabled = {
@@ -322,7 +323,7 @@ const GraphPage: React.FC<Props> = ({jsons, updateFiles}) => {
             <div style={{ display:'flex' }}>
                 <div style={{ width:'50%', float:'left' }}>
                     <div className='medium-chart'>
-                        <MyComposedChart data={data} json1={jsons[0]} options={options} query={query} />
+                        <MyIComposedChart data={data} json1={jsons[0]} options={options} query={query} type={0} />
                     </div>
                     <div className="small-chart">
                         <MyPieChart data={events0} dkOne='value' />
@@ -331,7 +332,7 @@ const GraphPage: React.FC<Props> = ({jsons, updateFiles}) => {
                 <div className='vertical-bar'></div>
                 <div style={{ width:'50%', float:'right' }}>
                     <div className='medium-chart'>
-                        <MyComposedChart data={data} json1={null} json2={jsons[1]} options={options} query={query}/>
+                        <MyIComposedChart data={data} json1={jsons[1]} options={options} query={query} type={1}/>
                     </div>
                     <div className="small-chart">
                         <MyPieChart data={events1} dkOne='value' />

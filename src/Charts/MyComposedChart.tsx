@@ -90,7 +90,6 @@ function findTimestampRanges(data: any[], min: number, max: number, selected: st
       ranges.push([currentRangeStart, data[data.length - 1].timestamp]);
     }
   
-    console.log(ranges)
     return ranges;
 }
 
@@ -247,7 +246,6 @@ const MyComposedChart = ( props: ChartProps ) => {
             <Line hide={!options['calories']} unit={labels['calories'][1]} name={json2['name'] + ' Calories'} type="monotone" dataKey='calories2' stroke="#55e081" yAxisId={4} dot={false} strokeDasharray='5 3'/>
             <Line hide={!options['speed']} unit={labels['speed'][1]} name={json1['name'] + ' Speed'} type="monotone" dataKey='speed1' stroke="#fa9b48" yAxisId={5} dot={false}/>
             <Line hide={!options['speed']} unit={labels['speed'][1]} name={json2['name'] + ' Speed'} type="monotone" dataKey='speed2' stroke="#fa9b48" yAxisId={5} dot={false} strokeDasharray='5 3'/>
-            {/* <ReferenceArea x1={(new Date(1680806770 * 1000)).toLocaleTimeString()} x2={(new Date(1680806783 * 1000)).toLocaleTimeString()} stroke='red' strokeOpacity={0.3} /> */}
             {ranges.map((range, index) => (
                 <ReferenceArea key={index} x1={range[0]} x2={range[1]} stroke='red' strokeOpacity={0.3}/>
             ))}
