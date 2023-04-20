@@ -8,7 +8,7 @@ function findTimestampRanges(data: any[], min: number, max: number, selected: st
   
     if (selected === 'heart_rate') {
         for (const { timestamp, heartRate1, heartRate2 } of data) {
-          if (heartRate1 >= min && heartRate1 <= max || heartRate2 >= min && heartRate2 <= max) {
+          if ((heartRate1 >= min && heartRate1 <= max) || (heartRate2 >= min && heartRate2 <= max)) {
             if (currentRangeStart === null) {
               currentRangeStart = timestamp;
             }
@@ -21,7 +21,7 @@ function findTimestampRanges(data: any[], min: number, max: number, selected: st
         }
     } else if (selected === 'distance') {
         for (const { timestamp, distance1, distance2 } of data) {
-            if (distance1 >= min && distance1 <= max || distance2 >= min && distance2 <= max) {
+            if ((distance1 >= min && distance1 <= max) || (distance2 >= min && distance2 <= max)) {
               if (currentRangeStart === null) {
                 currentRangeStart = timestamp;
               }
@@ -34,7 +34,7 @@ function findTimestampRanges(data: any[], min: number, max: number, selected: st
           }
     } else if (selected === 'steps') {
         for (const { timestamp, steps1, steps2 } of data) {
-            if (steps1 >= min && steps1 <= max || steps2 >= min && steps2 <= max) {
+            if ((steps1 >= min && steps1 <= max || steps2 >= min && steps2 <= max)) {
               if (currentRangeStart === null) {
                 currentRangeStart = timestamp;
               }
@@ -47,7 +47,7 @@ function findTimestampRanges(data: any[], min: number, max: number, selected: st
           }
     } else if (selected === 'calories') {
         for (const { timestamp, calories1, calories2 } of data) {
-            if (calories1 >= min && calories1 <= max || calories2 >= min && calories2 <= max) {
+            if ((calories1 >= min && calories1 <= max) || (calories2 >= min && calories2 <= max)) {
               if (currentRangeStart === null) {
                 currentRangeStart = timestamp;
               }
@@ -60,7 +60,7 @@ function findTimestampRanges(data: any[], min: number, max: number, selected: st
           }
     } else if (selected === 'speed') {
         for (const { timestamp, speed1, speed2 } of data) {
-            if (speed1 >= min && speed1 <= max || speed2 >= min && speed2 <= max) {
+            if ((speed1 >= min && speed1 <= max) || (speed2 >= min && speed2 <= max)) {
               if (currentRangeStart === null) {
                 currentRangeStart = timestamp;
               }
@@ -73,7 +73,7 @@ function findTimestampRanges(data: any[], min: number, max: number, selected: st
           }
     } else if (selected === 'power') {
         for (const { timestamp, power1, power2 } of data) {
-            if (power1 >= min && power1 <= max || power2 >= min && power2 <= max) {
+            if ((power1 >= min && power1 <= max) || (power2 >= min && power2 <= max)) {
               if (currentRangeStart === null) {
                 currentRangeStart = timestamp;
               }
