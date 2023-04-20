@@ -34,7 +34,7 @@ function findTimestampRanges(data: any[], min: number, max: number, selected: st
           }
     } else if (selected === 'steps') {
         for (const { timestamp, steps1, steps2 } of data) {
-            if ((steps1 >= min && steps1 <= max || steps2 >= min && steps2 <= max)) {
+            if ((steps1 >= min && steps1 <= max) || (steps2 >= min && steps2 <= max)) {
               if (currentRangeStart === null) {
                 currentRangeStart = timestamp;
               }
