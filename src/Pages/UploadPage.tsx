@@ -88,7 +88,6 @@ const UploadPage: React.FC<Props> = ({passFiles}) => {
         })
 
         data = result
-        console.log(data)
         // exportToExcel(data, "console-log-res.xlsx");
         // console.log(data.slice(1))
     })

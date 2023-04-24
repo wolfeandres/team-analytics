@@ -408,12 +408,6 @@ const GraphPage: React.FC<Props> = ({jsons, updateFiles}) => {
         setQueryDialog(false)
     }
 
-    const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-        if (e.target.value === '') {
-            setMinValue(undefined)
-        }
-    }
-
     return (
         <div style={{ paddingBottom:16}}>
             <AppBar>

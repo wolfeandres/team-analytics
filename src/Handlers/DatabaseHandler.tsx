@@ -74,7 +74,6 @@ function getPartnerJSON(json: { name: string, workout: { start_timestamp: any, p
             data : body
         };
 
-        console.log(json)
         var partner_name = json.workout.partners[0].name;
         var main_timestamp = json.workout.start_timestamp
         // send POST request and get the token for another request
