@@ -1,6 +1,7 @@
 ## Data Analyzation of Fitness Technologies
 
 ## Team Analysts
+Contributors: Andres Wolfe, Luke Colussi, Adam Slavny, Aidan Shwom, Dylan DeAlmeida
 
 ## Description
 Software Documentation: [Download Documentation](https://github.com/wolfeandres/team-analytics/blob/master/Final_Software_Design_Documentation.docx)
