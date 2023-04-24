@@ -4,7 +4,7 @@
 Contributors: Andres Wolfe, Luke Colussi, Adam Slavny, Aidan Shwom, Dylan DeAlmeida
 
 ## Description
-Software Documentation: [Download Documentation](https://github.com/wolfeandres/team-analytics/blob/master/Final_Software_Design_Documentation.docx)
+Software Documentation: [Download Documentation](https://github.com/wolfeandres/team-analytics/blob/master/Final_Software_Design_Document.docx)
 
 ## Installation
 This application requires NodeJs, you can install it [Here](https://nodejs.org/en/download/)
