@@ -279,7 +279,7 @@ const GraphPage: React.FC<Props> = ({jsons, updateFiles}) => {
     const date1: Date = new Date(timestamp0 * 1000)
 
     const header = (
-        <div style={{ display: 'flex', textAlign:'center'}}>
+        <div style={{ display: 'flex', textAlign: 'center'}}>
             <div style={{ width:'50%', float:'left'}}>
                 <div style={{fontSize: '20px', marginLeft:20, marginTop:10}}>
                     {jsons[0]['name']}
