@@ -3,7 +3,7 @@
 ## Team Analysts
 
 ## Description
-Software Documentation: [Download Documentation}(https://github.com/wolfeandres/team-analytics/blob/master/Final_Software_Design_Documentation.docx)
+Software Documentation: [Download Documentation](https://github.com/wolfeandres/team-analytics/blob/master/Final_Software_Design_Documentation.docx)
 
 ## Installation
 This application requires NodeJs, you can install it [here](https://nodejs.org/en/download/)
