@@ -17,6 +17,10 @@ const renderRow = (props: ListChildComponentProps & { passFiles: (arg: any) => v
                 partner = data[index]
             } else {
                 partner = await DatabaseHandler.getPartnerJSON(data[index])
+
+                if (partner === null) {
+                    partner = data[index]
+                }
             }
         } catch (e) {
             partner = data[index]

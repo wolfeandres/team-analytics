@@ -4,7 +4,7 @@ declare global {
     }
 }
 
-const api_key = "AIzaSyASIrA-LYQuwFAjTREObcmw-e_QY3wljQM"
+const api_key = process.env.REACT_APP_MAP_KEY;
 const script = document.createElement('script');
 script.src = `https://maps.googleapis.com/maps/api/js?key=${api_key}&callback=Function.prototype`;
 document.head.appendChild(script);

@@ -2,7 +2,7 @@ import axios from 'axios';
 import JSONHandler from './JSONHandler';
 
 var app_id = "react-apiow";
-var api_key = process.env.DB_Key;
+var api_key = process.env.REACT_APP_DB_KEY;
 
 // returns every JSON stores in the database
 function getDatabaseEntries() : Promise<Array<any>> {

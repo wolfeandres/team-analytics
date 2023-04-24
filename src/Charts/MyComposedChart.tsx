@@ -233,11 +233,11 @@ const MyComposedChart = ( props: ChartProps ) => {
                 iconSize={0}
                 />
 
-            <ReferenceLine y={options['heart_rate'] ? json1['workout']['heart_rate']['target_heart_rate'] : null} label={options['heart_rate'] ? "Target" : ''} stroke="#8884d8" ifOverflow='extendDomain' />
-            <ReferenceLine y={options['heart_rate'] ? json2['workout']['heart_rate']['target_heart_rate'] : null} label={options['heart_rate'] ? "Target" : ''} stroke="#8884d8" ifOverflow='extendDomain' strokeDasharray='5 3' />
+            <ReferenceLine y={options['heart_rate'] ? json1['workout']['heart_rate']['target_heart_rate'] : null} label={options['heart_rate'] ? "Target" : ''} stroke="#0f43a3" ifOverflow='extendDomain' />
+            <ReferenceLine y={options['heart_rate'] ? json2['workout']['heart_rate']['target_heart_rate'] : null} label={options['heart_rate'] ? "Target" : ''} stroke="#0f43a3" ifOverflow='extendDomain' strokeDasharray='5 3' />
             <Area hide={!options['elevation']} unit='m' type='monotone' name='Elevation' yAxisId={1} dataKey='elevation' stroke='#66d0de' fill='url(#elevation)' fillOpacity={1}/>
-            <Line hide={!options['heart_rate']} unit={labels['heart_rate'][1]} name={json1['name'] + ' Heart Rate'} type="monotone" dataKey='heartRate1' stroke="#8884d8" yAxisId={0} dot={false}/>
-            <Line hide={!options['heart_rate']} unit={labels['heart_rate'][1]} name={json2['name'] + ' Heart Rate'} type="monotone" dataKey='heartRate2' stroke="#8884d8" yAxisId={0} dot={false} strokeDasharray='5 3'/>
+            <Line hide={!options['heart_rate']} unit={labels['heart_rate'][1]} name={json1['name'] + ' Heart Rate'} type="monotone" dataKey='heartRate1' stroke="#0f43a3" yAxisId={0} dot={false}/>
+            <Line hide={!options['heart_rate']} unit={labels['heart_rate'][1]} name={json2['name'] + ' Heart Rate'} type="monotone" dataKey='heartRate2' stroke="#0f43a3" yAxisId={0} dot={false} strokeDasharray='5 3'/>
             <Line hide={!options['distance']} unit={labels['distance'][1]} name={json1['name'] + ' Distance'} type="monotone" dataKey='distance1' stroke="#9240de" yAxisId={2} dot={false}/>
             <Line hide={!options['distance']} unit={labels['distance'][1]} name={json2['name'] + ' Distance'} type="monotone" dataKey='distance2' stroke="#9240de" yAxisId={2} dot={false} strokeDasharray='5 3'/>
             <Line hide={!options['steps']} unit={labels['steps'][1]} name={json1['name'] + ' Steps'} type="monotone" dataKey='steps1' stroke="#de4077" yAxisId={3} dot={false}/>

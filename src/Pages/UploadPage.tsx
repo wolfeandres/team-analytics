@@ -68,7 +68,7 @@ const UploadPage: React.FC<Props> = ({passFiles}) => {
                 if (typeof a['workout']['start_timestamp'] === 'number') {
                     timestampA = a['workout']['start_timestamp'];
                 } else {
-                    timestampA = 0
+                    timestampA = parseInt(a['workout']['start_timestamp'])
                 }
             } catch (e) {
                 timestampA = 0

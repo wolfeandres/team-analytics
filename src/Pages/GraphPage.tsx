@@ -166,14 +166,6 @@ const mergeData = (json1: any, json2: any) => {
     return result
 }
 
-const convertData = (data: any[]) => {
-    return data.map((item) => {
-        return {
-            value: Math.trunc(item.value * 100) / 100,
-            timestamp: (new Date(item.timestamp * 1000)).toLocaleTimeString()
-        }
-    })
-}
 interface Props {
     jsons: any[]
     updateFiles: (arg: any) => void
@@ -212,8 +204,8 @@ const GraphPage: React.FC<Props> = ({jsons, updateFiles}) => {
     })
     const [queryDialog, setQueryDialog] = useState<boolean>(false)
     const [selectedQuery, setSelectedQuery] = useState<string>('')
-    const [minValue, setMinValue] = useState<number>(0)
-    const [maxValue, setMaxValue] = useState<number>(0)
+    const [minValue, setMinValue] = useState<number | undefined>(undefined)
+    const [maxValue, setMaxValue] = useState<number | undefined>(undefined)
     const [minDialogError, setMinDialogError] = useState<boolean>(false)
     const [maxDialogError, setMaxDialogError] = useState<boolean>(false)
     const [query, setQuery] = useState<Query>({
@@ -270,8 +262,15 @@ const GraphPage: React.FC<Props> = ({jsons, updateFiles}) => {
         fetchElevationData();
     }, [])
 
+
+    try {
+        const timestamp1: number = jsons[1]['workout']['start_timestamp']
+    } catch {
+        jsons[1] = jsons[0]
+    }
+
     const events0 = (jsons[0]['events'])
-    const events1 = (jsons[1]['events'])
+    const events1 = (jsons[0]['events'])
 
     const timestamp0: number = jsons[0]['workout']['start_timestamp']
     const date0: Date = new Date(timestamp0 * 1000)
@@ -280,7 +279,7 @@ const GraphPage: React.FC<Props> = ({jsons, updateFiles}) => {
     const date1: Date = new Date(timestamp0 * 1000)
 
     const header = (
-        <div style={{ display: 'flex'}}>
+        <div style={{ display: 'flex', textAlign:'center'}}>
             <div style={{ width:'50%', float:'left'}}>
                 <div style={{fontSize: '20px', marginLeft:20, marginTop:10}}>
                     {jsons[0]['name']}
@@ -292,7 +291,7 @@ const GraphPage: React.FC<Props> = ({jsons, updateFiles}) => {
                     Start Time - {date0.toLocaleTimeString()} - {date0.toLocaleDateString()}
                 </div>
             </div>
-            <div style={{ width:'50%', float:'right'}}>
+            <div style={{ width:'50%', float:'right',}}>
                 <div style={{fontSize: '20px', marginLeft:20, marginTop:10}}>
                     {jsons[1]['name']}
                 </div>
@@ -354,10 +353,13 @@ const GraphPage: React.FC<Props> = ({jsons, updateFiles}) => {
         if (!isNaN(value)) {
             setMinValue(value)
 
-            if (minValue > maxValue) {
-                setMinDialogError(true)
-            } else {
-                setMinDialogError(false)
+            if (maxValue !== undefined) {
+                if (value > maxValue) {
+                    setMinDialogError(true)
+                } else {
+                    setMinDialogError(false)
+                    setMaxDialogError(false)
+                }
             }
         }
     }
@@ -366,22 +368,26 @@ const GraphPage: React.FC<Props> = ({jsons, updateFiles}) => {
         const value = parseInt(e.target.value)
         if (!isNaN(value)) {
             setMaxValue(value)
-            if (maxValue < minValue) {
-                setMaxDialogError(true)
-            } else {
-                setMaxDialogError(false)
+
+            if (minValue !== undefined) {
+                if (value < minValue) {
+                    setMaxDialogError(true)
+                } else {
+                    setMaxDialogError(false)
+                    setMinDialogError(false)
+                }
             }
         }
     }
 
     const handleClear = () => {
-        setMaxValue(0)
-        setMinValue(0)
+        setMaxValue(undefined)
+        setMinValue(undefined)
         setSelectedQuery('')
     }
 
     const handleQueryExit = () => {
-        if (!minDialogError && !maxDialogError) {
+        if (!minDialogError && !maxDialogError && minValue && maxValue) {
             setQuery({
                 selected: selectedQuery,
                 min: minValue,
@@ -392,7 +398,7 @@ const GraphPage: React.FC<Props> = ({jsons, updateFiles}) => {
     }
 
     const handleQueryClose = () => {
-        if (!minDialogError && !maxDialogError) {
+        if (!minDialogError && !maxDialogError && minValue && maxValue) {
             setQuery({
                 selected: selectedQuery,
                 min: minValue,
@@ -400,6 +406,12 @@ const GraphPage: React.FC<Props> = ({jsons, updateFiles}) => {
             })
         }
         setQueryDialog(false)
+    }
+
+    const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+        if (e.target.value === '') {
+            setMinValue(undefined)
+        }
     }
 
     return (
@@ -422,8 +434,8 @@ const GraphPage: React.FC<Props> = ({jsons, updateFiles}) => {
                             <MenuItem disabled={disabled['speed']} value='speed'>Speed</MenuItem>
                             <MenuItem disabled={disabled['power']} value='power'>Power</MenuItem>
                         </Select>
-                        <TextField error={minDialogError} helperText={minDialogError ? 'Min must be less than Max' : ''} type='number' inputProps={{ inputMode: 'numeric', pattern: '[0-9]*', allowemptyformatting:'true'}} label="Min Value" value={minValue} onChange={handleMin} />
-                        <TextField error={maxDialogError} helperText={maxDialogError ? 'Max must be greater than Min' : ''} type='number' inputProps={{ inputMode: 'numeric', pattern: '[0-9]*', allowemptyformatting:'true' }} label="Max Value" value={maxValue} onChange={handleMax} />
+                        <TextField error={minDialogError} helperText={minDialogError ? 'Min must be less than Max' : ''} type='number' label="Min Value" value={minValue?.toString()} onChange={handleMin} />
+                        <TextField error={maxDialogError} helperText={maxDialogError ? 'Max must be greater than Min' : ''} type='number' inputProps={{ inputMode: 'numeric', allowemptyformatting:'true' }} label="Max Value" value={maxValue} onChange={handleMax} />
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={handleClear}>Clear</Button>
