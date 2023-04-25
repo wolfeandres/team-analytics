@@ -4,6 +4,7 @@ exports = async function({ query, headers, body}, response) {
     // Headers, e.g. {"Content-Type": ["application/json"]}
     const contentTypes = headers["Content-Type"];
 
+    // Make sure there is a body.
     if (body == null) {
       return "Error: you must include a body to your request.";
     }
@@ -12,7 +13,9 @@ exports = async function({ query, headers, body}, response) {
     var current_time = Math.floor(Date.now() / 1000)
     
     try {
+      // Get the body as a JSON
       const json = JSON.parse(body.text());
+      // Get JSON within Document object.
       const reqBody = json.document;
       
       /*
@@ -38,11 +41,12 @@ exports = async function({ query, headers, body}, response) {
         return "Error: device_id field should be a String.";
       }
       
-      
+      // Workout Object
       if (reqBody.workout == null || typeof reqBody.workout != "object") {
         return "Error: workout object does not exist.";
       }
       
+      // Make sure all mandatory values are there, of the proper type, and aren't empty.
       if (reqBody.workout.workout_type == null) {
         return "Error: missing workout_type or workout_type is null";
       } else if (typeof reqBody.workout.workout_type != "string") {
@@ -84,6 +88,7 @@ exports = async function({ query, headers, body}, response) {
       
 
       for (var k in reqBody.workout) {
+        // Parse through the units.
         if (reqBody.workout[k].units != null) {
           if (typeof reqBody.workout[k].units != "string") {
             return "Error: units in object " + k + " must be of type String";
@@ -91,13 +96,16 @@ exports = async function({ query, headers, body}, response) {
             return "Error: units at object " + k + " must be specified and not an empty String";
           }
           
+          // If the data array is there
           if (reqBody.workout[k].data != null) {
+            // Make sure that it has data and is an array.
             if (reqBody.workout[k].data.length == null) {
               return "Error: data array of object " + k + " is not an array";
             } else if (reqBody.workout[k].data.length == 0) {
               return "Error: data array in object " + k + " cannot be empty if it exists.";
             } else {
               for (var l = 0; l < reqBody.workout[k].data.length; l++) {
+                // Make sure the values and timestamps are valid.
                 if (reqBody.workout[k].data[l].value == null) {
                   return "Error: a value must be provided in data array of object " + k + " at index " + l; 
                 } else if (typeof reqBody.workout[k].data[l].value != "string") {
@@ -110,6 +118,7 @@ exports = async function({ query, headers, body}, response) {
                   return "Error: a timestamp must be provided in data array of object " + k + " at index " + l; 
                 } else if (typeof reqBody.workout[k].data[l].timestamp != "number") {
                   return "Error: the timestamp in data array of object " + k + " at index " + l + " must be of type Number";
+                  // check if the timestamp is in milliseconds or seconds.
                 } else if (reqBody.workout[k].data[l].timestamp > current_time) {
                   return "Error: timestamp in data array of object " + k + " at index " + l + " is not formatted in seconds.";
                 }
@@ -118,10 +127,12 @@ exports = async function({ query, headers, body}, response) {
           }
         }
       }
+        
       /*
       * Partners Data
       */
       if (reqBody.workout.partners != null) {
+        // Check if the partner array is an array, and if it exists it must be filled.
         if (typeof reqBody.workout.partners != "object" || reqBody.workout.partners.length == null) {
           return "Error: partners must be an array";
         }
@@ -130,6 +141,7 @@ exports = async function({ query, headers, body}, response) {
           return "Error: partner array must not be empty if it exists";
         }
         
+        // Validate name and device id of the partner array.
         for (var i = 0; i < reqBody.workout.partners.length; i++) {
           if (reqBody.workout.partners[i].name == null) {
             return "Error: missing partner name or partner name is null at index " + i;
@@ -155,6 +167,7 @@ exports = async function({ query, headers, body}, response) {
       */
       if (reqBody.events != null) {
         for (var j = 0; j < reqBody.events.length; j++) {
+          // Validate event type and timestamps
           if (reqBody.events[j].event_type == null) {
             return "Error: event_type is missing or null at index " + j + " in events array";
           } else if (typeof reqBody.events[j].event_type != "string") {
@@ -171,6 +184,7 @@ exports = async function({ query, headers, body}, response) {
               return "Error: timestamp in events array at index " + j + " is not formatted in seconds.";
           }
           
+          // Check data fields specific to certain events.
           switch (reqBody.events[j].event_type) {
             case "0":
             case "1":
@@ -286,12 +300,15 @@ exports = async function({ query, headers, body}, response) {
         events_size = reqBody.events.length;
       }
       
+      // Use a query to match values and see if a JSON with this data already exists.
       var count = await context.services.get("FitnessLog").db("FitnessLog").collection("FitnessLogs").count({name: name, device_id: device_id, "workout.partners.name": partner_name, "workout.partners.device_id": partner_device_id, "workout.start_timestamp": start_timestamp, "workout.end_timestamp": end_timestamp, "workout.partners": { $size: partners_size }, events: { $size: events_size }});
     
+      // If so, do not insert.
       if (count > 0) {
         return "Error: found duplicate document(s) in the database";
       }
       
+      // Insert to database.
       return context.services.get("FitnessLog").db("FitnessLog").collection("FitnessLogs").insertOne(reqBody);
     } catch (err) {
       return err;
