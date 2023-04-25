@@ -36,7 +36,10 @@ function isPartnerJSON(json: { name: string, workout: { start_timestamp: any, pa
 
     var workout_timestamp = json.workout.start_timestamp;
     var partner_workout_timestamp = partner_json.workout.start_timestamp
+    
+    // check if the names match for both
     if (json.workout.partners[0].name == partner_name && partner_json.workout.partners[0].name == name) {
+        // TODO: change it to detect if there is time overlap between the start and end timestamps, as right now it takes the start timestamps and assumes they are close together by at least 5 seconds.
         if (Math.abs(workout_timestamp - partner_workout_timestamp) < 5) {
             return true;
         }
